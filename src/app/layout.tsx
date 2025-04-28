@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import Header from '@/components/common/Header';
@@ -31,7 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="zh-Hant">
+        <html lang="en">
             <body>
                 <Header />
                 <Navbar />
