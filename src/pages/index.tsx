@@ -1,11 +1,21 @@
-import Layout from "@/components/common/Layout";
+import Layout from "@/components/common/Layout"
+import Head from "next/head"
+import Link from "next/link"
 
 export default function Home() {
   return (
-    <Layout title="funcReveal" description="展示最新 CSS + JS 特效">
-      <h1>歡迎來到 funcReveal</h1>
-      <a href="/effects-gallery">effects-gallery</a>
-      {/* 其他內容 */}
-    </Layout>
+    <>
+      <Head>
+        <title>funcReveal</title>
+        <meta name="description" content="A collection of CSS and Javascript effects for web development." />
+      </Head>
+      <Layout>
+        <h1>歡迎來到 funcReveal</h1>
+        <Link href={"effects-gallery"}>
+          effects-gallery
+        </Link>
+        {/* 其他內容 */}
+      </Layout>
+    </>
   );
 }
