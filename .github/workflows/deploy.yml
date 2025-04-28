@@ -26,10 +26,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "npm"  # ✅ 改這裡
+          cache: "npm"
 
       - name: Install dependencies
-        run: npm install  # ✅ 改這裡
+        run: npm install
 
       - name: Setup Pages
         id: setup_pages
