@@ -1,9 +1,9 @@
 import React from 'react'
-import './ButtonGlow.css' // You can also use styled-components or Emotion
+import styles from './ButtonGlow.module.css' // You can also use styled-components or Emotion
 
 const ButtonGlow = () => {
     return (
-        <button className="glow-button">
+        <button className={styles.glowButton}>
             Hover Me
         </button>
     )
