@@ -1,5 +1,7 @@
-// import dynamic from 'next/dynamic'
-import ButtonGlow from './effects/ButtonGlow'
+import dynamic from 'next/dynamic'
+import { JSX } from 'react'
+
+const ButtonGlow = dynamic(() => import('./effects/ButtonGlow'), { ssr: false })
 
 const registry: Record<string, JSX.Element> = {
     'button-glow': <ButtonGlow />,

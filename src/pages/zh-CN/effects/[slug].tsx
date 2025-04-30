@@ -8,7 +8,7 @@ export async function getStaticPaths() {
     };
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params }: { params: { slug: string } }) {
     return { props: { slug: params.slug } };
 }
 
