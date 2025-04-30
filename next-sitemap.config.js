@@ -4,6 +4,7 @@ module.exports = {
   generateRobotsTxt: true,
   outDir: "./out",
   exclude: ["/404"],
+  sitemapSize: 1000,
   transform: async (config, path) => {
     return {
       loc: `${config.siteUrl}${path}`,
@@ -13,13 +14,12 @@ module.exports = {
     };
   },
   robotsTxtOptions: {
-    // 👇 You must NOT include `host` here (omit it to prevent `Host:` line)
     policies: [
       {
         userAgent: "*",
         allow: "/",
       },
     ],
-    additionalSitemaps: ["https://funcreveal.github.io/sitemap.xml"],
+    additionalSitemaps: ["https://funcreveal.github.io/sitemap-0.xml"],
   },
 };
