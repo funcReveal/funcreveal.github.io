@@ -12,4 +12,14 @@ module.exports = {
       lastmod: new Date().toISOString(),
     };
   },
+  robotsTxtOptions: {
+    // 👇 You must NOT include `host` here (omit it to prevent `Host:` line)
+    policies: [
+      {
+        userAgent: "*",
+        allow: "/",
+      },
+    ],
+    additionalSitemaps: ["https://funcreveal.github.io/sitemap.xml"],
+  },
 };
