@@ -1,0 +1,14 @@
+import Layout from '@/components/Layout'
+import Link from 'next/link'
+
+export default function Home() {
+  return (
+    <Layout>
+      <section className="text-center p-8">
+        <h1 className="text-3xl font-bold">歡迎來到 funcReveal</h1>
+        <p className="mt-4 text-lg">探索各種 CSS + JavaScript 特效，展現前端的魅力！</p>
+        <Link href={'effects-gallery'}>去看特效</Link>
+      </section>
+    </Layout>
+  )
+}
