@@ -6,16 +6,16 @@ export default function EffectsGallery() {
     return (
         <>
             <NextSeo
-                title="Effects Gallery | funcReveal"
-                description="A list of interactive CSS + JS effects."
-                canonical="https://funcreveal.github.io/effects-gallery/"
+                title="特效總覽 | funcReveal"
+                description="各種 CSS + JS 特效的集合。"
+                canonical="https://funcreveal.github.io/zh-TW/effects-gallery/"
             />
-            <h1>Effects Gallery</h1>
+            <h1>特效總覽</h1>
             <ul>
                 {effects.map((effect) => (
                     <li key={effect.slug}>
-                        <Link href={`/effects/${effect.slug}`}>
-                            {effect.titles['en']}
+                        <Link href={`/zh-TW/effects/${effect.slug}`}>
+                            {effect.titles['zh-TW']}
                         </Link>
                     </li>
                 ))}
