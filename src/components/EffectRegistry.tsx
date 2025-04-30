@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic'
+// import dynamic from 'next/dynamic'
 import ButtonGlow from './effects/ButtonGlow'
 
 const registry: Record<string, JSX.Element> = {
