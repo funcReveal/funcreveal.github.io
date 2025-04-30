@@ -6,10 +6,22 @@ module.exports = {
   exclude: ["/404"],
   sitemapSize: 1000,
   transform: async (config, path) => {
+    let priority = 0.5;
+
+    if (path === "/") {
+      priority = 1.0;
+    } else if (path === "/note") {
+      priority = 0.8;
+    } else if (path === "/effects-gallery") {
+      priority = 0.9;
+    } else if (path.startsWith("/effects/")) {
+      priority = 0.7;
+    }
+
     return {
       loc: `${config.siteUrl}${path}`,
       changefreq: "monthly",
-      priority: 0.7,
+      priority,
       lastmod: new Date().toISOString(),
     };
   },
@@ -20,6 +32,5 @@ module.exports = {
         allow: "/",
       },
     ],
-    additionalSitemaps: ["https://funcreveal.github.io/sitemap-0.xml"],
   },
 };
