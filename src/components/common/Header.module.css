@@ -1,0 +1,11 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.language {}

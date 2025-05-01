@@ -7,7 +7,7 @@ export default function HomeZhTW() {
         <>
             <Layout>
                 <NextSeo
-                    title="funcReveal | 網頁特效展示"
+                    title="funcReveal"
                     description="展示 CSS + JS 特效的官方網站。"
                     canonical="https://funcreveal.github.io/zh-TW/"
                     languageAlternates={[
@@ -18,7 +18,7 @@ export default function HomeZhTW() {
                 <section className="text-center p-8">
                     <h1 className="text-3xl font-bold">funcReveal</h1>
                     <p className="mt-4 text-lg">探索 CSS + JavaScript 特效.</p>
-                    <Link href={'/zh-CN/effects-gallery'}>前往特效集</Link>
+                    <Link href={'/zh-TW/effects-gallery'}>前往特效集</Link>
                 </section>
             </Layout>
         </>
