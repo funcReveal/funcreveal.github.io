@@ -1,5 +1,4 @@
 import { NextSeo } from 'next-seo'
-import Link from 'next/link'
 
 import Layout from '@/components/Layout'
 import { Box, Card, Tab, Tabs } from '@mui/material'
