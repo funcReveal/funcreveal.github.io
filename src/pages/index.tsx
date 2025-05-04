@@ -1,8 +1,8 @@
+import React from 'react';
 import { NextSeo } from 'next-seo'
 
 import Layout from '@/components/Layout'
 import { Box, Card, Tab, Tabs } from '@mui/material'
-import React from 'react';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,16 +52,6 @@ export default function Home() {
         ]}
       />
       <section className="text-center p-8">
-        {/* <h1 className="text-3xl font-bold">funcReveal</h1> */}
-        {/* <p className="mt-4 text-lg">Explore CSS + JavaScript effects.</p> */}
-        {/* <Link
-          href={'effects-gallery'}
-        // style={{
-
-        // }}
-        >
-          Go effects-gallery
-        </Link> */}
         <Box sx={{ backgroundColor: 'gray' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
             <Tab label="最新" {...a11yProps(0)} />
