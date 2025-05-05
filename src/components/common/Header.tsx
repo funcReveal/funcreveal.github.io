@@ -6,6 +6,7 @@ import Navbar from './Navbar'
 
 import { AppBar, Box, Toolbar, Typography, Menu, MenuItem, Button } from '@mui/material'
 import LanguageIcon from '@mui/icons-material/Language'
+import Image from 'next/image'
 
 const Header = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -53,20 +54,11 @@ const Header = () => {
                 gap: 3
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                    <Typography
-                        variant="h1"
-                        component={Link}
-                        href={homePath}
-                        sx={{
-                            textDecoration: 'none',
-                            color: 'white',
-                            fontWeight: 600,
-                            fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
-                            '&:hover': { color: '#90caf9' }
-                        }}
-                    >
-                        funcReveal
-                    </Typography>
+                    <Link href={homePath} passHref>
+                        <Box>
+                            <Image alt='logo' src={'/logo.PSD'} width={50} height={50} />
+                        </Box>
+                    </Link>
                     <Navbar />
                 </Box>
 

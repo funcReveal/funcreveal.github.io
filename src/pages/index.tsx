@@ -54,8 +54,8 @@ export default function Home() {
       <section className="text-center p-8">
         <Box sx={{ backgroundColor: 'gray' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-            <Tab label="最新" {...a11yProps(0)} />
-            <Tab label="最熱門" {...a11yProps(1)} />
+            <Tab label="dd" {...a11yProps(0)} />
+            <Tab label="ss" {...a11yProps(1)} />
             <Tab label="Item Three" {...a11yProps(2)} />
           </Tabs>
           <CustomTabPanel value={value} index={0}>
