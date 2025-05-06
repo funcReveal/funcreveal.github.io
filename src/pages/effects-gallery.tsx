@@ -3,13 +3,23 @@ import { effects } from '@/lib/effects'
 import { NextSeo } from 'next-seo'
 import Layout from '@/components/Layout'
 import { Box, Card, Tab, Tabs, Typography } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { GitHub } from '@mui/icons-material'
 
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
     value: number;
+}
+
+interface effectProps {
+    slug: string;
+    titles: {
+        [lang: string]: string;
+    };
+    descriptions: {
+        [lang: string]: string;
+    };
 }
 
 function CustomTabPanel(props: TabPanelProps) {
@@ -35,8 +45,104 @@ function a11yProps(index: number) {
     };
 }
 
+function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
+
+    const handleClick = async () => {
+        try {
+            const url = `https://view-counter.funcreveal.workers.dev/?slug=${effect.slug}`;
+
+            navigator.sendBeacon(url);
+        } catch (err) {
+            console.error('Failed to increment view', err)
+        }
+    }
+
+    return (
+        <Card sx={{ p: 2, mb: '15px', borderRadius: 2, boxShadow: 8 }}>
+            <Box display={'flex'} flexDirection={'row'} gap={'10px'} alignItems={'center'}>
+                <Box width={'100px'} height={'100px'} flexShrink={0}>
+                    <video
+                        src={`/videos/${effect.slug}.webm`}
+                        preload="none"
+                        muted
+                        loop
+                        playsInline
+                        style={{ objectFit: 'cover', width: '100%', height: '100%', borderRadius: '10px' }}
+                        onMouseOver={(e) => (e.currentTarget as HTMLVideoElement).play()}
+                        onMouseOut={(e) => (e.currentTarget as HTMLVideoElement).pause()}
+                    />
+                </Box>
+                <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} minHeight={'100px'}>
+                    <Box>
+                        <Link
+                            href={`/effects/${effect.slug}`}
+                            onClick={handleClick}
+                            style={{
+                                color: 'var(--background)',
+                                fontWeight: '600'
+                            }}
+                        >
+                            {effect.titles['en']}
+                        </Link>
+                        <Typography
+                            color={'gray'}
+                            title={effect.descriptions['en']}
+                            display={'-webkit-box'}
+                            overflow={'hidden'}
+                            textOverflow={'ellipsis'}
+                            sx={{
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical'
+                            }}
+                        >
+                            {effect.descriptions['en']}
+                        </Typography>
+                    </Box>
+
+                    <Box display={'flex'} justifyContent={'space-between'}>
+                        <GitHub />
+                        <Typography>
+                            {views ?? '...'} views
+                        </Typography>
+                    </Box>
+                </Box>
+            </Box>
+        </Card>
+    )
+}
+
+
 export default function EffectsGallery() {
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState(0);
+
+    const [allViews, setAllViews] = useState<Record<string, number>>({})
+
+    useEffect(() => {
+        const fetchAllViews = async () => {
+            const cached = sessionStorage.getItem('funcReveal_allViews');
+            const cachedTime = sessionStorage.getItem('funcReveal_allViews_time');
+            const now = Date.now();
+
+            // expiration 5 minute
+            if (cached && cachedTime && now - parseInt(cachedTime) < 5 * 60 * 1000) {
+                const parsed = JSON.parse(cached);
+                setAllViews(parsed);
+                return;
+            }
+
+            try {
+                const slugs = effects.map(e => e.slug).join(',')
+                const res = await fetch(`https://view-counter.funcreveal.workers.dev/?slugs=${slugs}&queryOnly=1`)
+                const data = await res.json()
+                setAllViews(data.views || {})
+                sessionStorage.setItem('funcReveal_allViews', JSON.stringify(data.views || {}))
+            } catch (err) {
+                console.error('Failed to fetch all views', err)
+            }
+        }
+
+        fetchAllViews()
+    }, [])
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -95,69 +201,7 @@ export default function EffectsGallery() {
                             columnGap={'15px'}
                         >
                             {effects.map((effect) => (
-                                <Card
-                                    key={effect.slug}
-                                    sx={{
-                                        p: 2,
-                                        mb: '15px',
-                                        borderRadius: 2,
-                                        boxShadow: 8
-                                    }}
-                                >
-                                    <Box
-                                        display={'flex'}
-                                        flexDirection={'row'}
-                                        gap={'10px'}
-                                        alignItems={'center'}
-                                    >
-                                        <Box
-                                            width={'100px'}
-                                            height={'100px'}
-                                            flexShrink={0}
-                                        >
-                                            <video
-                                                src={`/videos/${effect.slug}.webm`}
-                                                preload="none"
-                                                muted
-                                                loop
-                                                playsInline
-                                                style={{ objectFit: 'cover', width: '100%', height: '100%', borderRadius: '10px' }}
-                                                onMouseOver={(e) => (e.currentTarget as HTMLVideoElement).play()}
-                                                onMouseOut={(e) => (e.currentTarget as HTMLVideoElement).pause()}
-                                            />
-                                        </Box>
-                                        <Box
-                                            flex={1}
-                                            display={'flex'}
-                                            flexDirection={'column'}
-                                            justifyContent={'space-between'}
-                                            minHeight={'100px'}
-                                        >
-                                            <Box>
-                                                <Link style={{ fontWeight: 'bold' }} href={`/effects/${effect.slug}`}>
-                                                    {effect.titles['en']}
-                                                </Link>
-                                                <Typography
-                                                    color={'gray'}
-                                                    title={effect.descriptions['en']}
-                                                    display={'-webkit-box'}
-                                                    overflow={'hidden'}
-                                                    textOverflow={'ellipsis'}
-                                                    sx={{
-                                                        WebkitLineClamp: 2,
-                                                        WebkitBoxOrient: 'vertical'
-                                                    }}
-                                                >
-                                                    {effect.descriptions['en']}
-                                                </Typography>
-                                            </Box>
-
-                                            <Box>
-                                                <GitHub />
-                                            </Box>
-                                        </Box>
-                                    </Box>
-                                </Card>
+                                <EffectCard key={effect.slug} effect={effect} views={allViews[effect.slug] ?? 0} />
                             ))}
                         </Box>
                     </CustomTabPanel>
