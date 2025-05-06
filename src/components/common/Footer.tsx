@@ -1,13 +1,19 @@
-import React from 'react'
-import styles from './Footer.module.css'
+import { Box } from '@mui/material'
 
-const Footer = () => {
+export default function Footer() {
     return (
-        <footer className={styles.footer}>
+        <Box
+            component="footer"
+            sx={{
+                textAlign: 'center',
+                py: 2,
+                backgroundColor: 'var(--background)',
+                color: 'var(--foreground)',
+                fontSize: '0.8rem'
+            }}
+        >
             © 2025{new Date().getFullYear() > 2025 ? ` ~ ${new Date().getFullYear()}` : ''} funcReveal. All rights reserved. <br />
             CSS and JavaScript effects are licensed under the MIT License. Other content and branding are reserved.
-        </footer>
+        </Box>
     )
 }
-
-export default Footer

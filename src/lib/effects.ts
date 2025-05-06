@@ -1,5 +1,18 @@
 export const effects = [
   {
+    slug: "test",
+    titles: {
+      en: "Test",
+      "zh-TW": "閃爍特效",
+      "zh-CN": "闪烁特效",
+    },
+    descriptions: {
+      en: "A subtle for test A subtle for test A subtle for test A subtle for test A subtle for test A subtle for test A subtle for test A subtle for test A subtle for test A subtle for test ",
+      "zh-TW": "細緻的閃爍動畫。",
+      "zh-CN": "细致的闪烁动画。",
+    },
+  },
+  {
     slug: "shimmer",
     titles: {
       en: "Shimmer Effect",
