@@ -11,7 +11,6 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 
 import { createHighlighter } from 'shiki';
 import { createOnigurumaEngine } from 'shiki/engine/oniguruma'
-
 interface CodeBlockProps {
     code: string;
     language: 'tsx' | 'css' | 'ts' | 'js';

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "gensources":"ts-node -P tsconfig.scripts.json scripts/generateEffectSources.ts src/components/effects src/lib/effectSources.ts",
     "build": "next build && next-sitemap",
     "start": "next start",
     "lint": "next lint"
@@ -27,6 +28,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }

@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS", // <‑‑ 關鍵：編譯成 require()
+    "moduleResolution": "node", // 與 ts-node 默認一致
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noEmit": false // 讓 ts-node 能即時轉譯
+  },
+  "include": ["scripts/**/*.ts"] // 只針對腳本資料夾
+}

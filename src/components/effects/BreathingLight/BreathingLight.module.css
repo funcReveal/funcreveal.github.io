@@ -1,0 +1,30 @@
+/* BreathingLight.module.css */
+/* A circular light that “breathes” by scaling and changing opacity. */
+.breathingLight {
+  /* Default CSS variables (override via inline style) */
+  --size: 24px; /* Diameter of the circle */
+  --color: #00e5ff; /* Base glow color */
+  --duration: 3s; /* One breathing cycle */
+
+  width: var(--size);
+  height: var(--size);
+  background: var(--color);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px currentColor;
+  animation: breathing var(--duration) ease-in-out infinite;
+}
+
+@keyframes breathing {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.6;
+    box-shadow: 0 0 6px currentColor, 0 0 12px currentColor;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+    box-shadow: 0 0 12px currentColor, 0 0 24px currentColor;
+  }
+}
