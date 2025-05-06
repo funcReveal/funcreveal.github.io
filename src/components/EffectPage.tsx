@@ -1,12 +1,17 @@
 import { NextSeo } from 'next-seo'
 import { effects } from '@/lib/effects'
+import { effectSources } from '@/lib/effectSources'
 import { getEffectComponent } from './EffectRegistry'
 import Layout from './Layout';
 import { Box } from '@mui/material';
 
+import CodePreview from './common/CodePreview/CodePreview';
+
 export default function EffectPage({ slug, locale }: { slug: string; locale: 'en' | 'zh-TW' | 'zh-CN' }) {
     const effect = effects.find((e) => e.slug === slug)
     const Demo = getEffectComponent(slug)
+    const source = effectSources[slug]
+
 
     if (!effect) {
         return <p>{locale === 'zh-CN' ? '页面未找到' : locale === 'zh-TW' ? '找不到頁面' : 'Page not found'}</p>
@@ -26,10 +31,22 @@ export default function EffectPage({ slug, locale }: { slug: string; locale: 'en
                         { hrefLang: 'zh-CN', href: `https://funcreveal.github.io/zh-CN/effects/${slug}/` },
                     ]}
                 />
-                <h1>{effect.titles[locale]}</h1>
-                <p>{effect.descriptions[locale]}</p>
 
-                {Demo ? <Box marginTop={'50px'} display={'flex'} justifyContent={'center'}>{Demo}</Box> : <p style={{ color: 'gray' }}>No demo available.</p>}
+                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                    <Box sx={{ width: '88%' }}>
+                        <h1>{effect.titles[locale]}</h1>
+                        <p>{effect.descriptions[locale]}</p>
+
+                        {Demo ? <Box my={'50px'} display={'flex'} justifyContent={'center'}>{Demo}</Box> : <p style={{ color: 'gray' }}>No demo available.</p>}
+                        {source?.tsxCode && source?.cssCode ? <CodePreview
+                            tsxCode={source?.tsxCode || ''}
+                            cssCode={source?.cssCode || ''}
+                            githubUrl={source?.githubUrl}
+                            TSXName={source?.TSXName}
+                            CSSName={source?.CSSName}
+                        /> : <></>}
+                    </Box>
+                </Box>
 
             </Layout>
         </>

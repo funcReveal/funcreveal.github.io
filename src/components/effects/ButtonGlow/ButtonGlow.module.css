@@ -1,16 +1,25 @@
+/* =============================
+   Glowing Button with Hover Effect
+   ============================= */
 .glowButton {
-    padding: 1rem 2rem;
-    font-size: 1rem;
-    border: none;
-    background: #111;
-    color: white;
-    cursor: pointer;
-    position: relative;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #00f, 0 0 20px #00f inset;
-    transition: box-shadow 0.3s ease;
+  padding: 1rem 2rem; /* Inner spacing */
+  font-size: 1rem; /* Text size */
+  border: none; /* Remove default border */
+  background: #111; /* Dark background */
+  color: white; /* Text color */
+  cursor: pointer; /* Show pointer on hover */
+  position: relative;
+  border-radius: 8px; /* Rounded corners */
+
+  /* Initial glow effect (both outer and inner) */
+  box-shadow: 0 0 10px #00f, /* Outer glow */ 0 0 20px #00f inset; /* Inner glow */
+
+  transition: box-shadow 0.3s ease; /* Smooth transition on hover */
 }
 
+/* =============================
+   Stronger glow on hover
+   ============================= */
 .glowButton:hover {
-    box-shadow: 0 0 20px #0ff, 0 0 30px #0ff inset;
+  box-shadow: 0 0 20px #0ff, /* Stronger outer glow */ 0 0 30px #0ff inset; /* Stronger inner glow */
 }

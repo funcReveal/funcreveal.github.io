@@ -55,7 +55,7 @@ export const effects = [
   {
     slug: "animated-border",
     titles: {
-      en: "Dynamic border effects",
+      en: "Animated Border ",
       "zh-TW": "動態邊框特效",
       "zh-CN": "动态边框特效",
     },
