@@ -2,6 +2,7 @@ import { NextSeo } from 'next-seo'
 import { effects } from '@/lib/effects'
 import { getEffectComponent } from './EffectRegistry'
 import Layout from './Layout';
+import { Box } from '@mui/material';
 
 export default function EffectPage({ slug, locale }: { slug: string; locale: 'en' | 'zh-TW' | 'zh-CN' }) {
     const effect = effects.find((e) => e.slug === slug)
@@ -27,7 +28,9 @@ export default function EffectPage({ slug, locale }: { slug: string; locale: 'en
                 />
                 <h1>{effect.titles[locale]}</h1>
                 <p>{effect.descriptions[locale]}</p>
-                {Demo ?? <p style={{ color: 'gray' }}>No demo available.</p>}
+
+                {Demo ? <Box marginTop={'50px'} display={'flex'} justifyContent={'center'}>{Demo}</Box> : <p style={{ color: 'gray' }}>No demo available.</p>}
+
             </Layout>
         </>
     )

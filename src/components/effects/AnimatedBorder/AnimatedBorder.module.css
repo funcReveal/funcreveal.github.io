@@ -1,0 +1,51 @@
+.container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 彩色旋轉光暈 */
+.glow {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    width: calc(100% + 24px);
+    height: calc(100% + 24px);
+    border-radius: 50%;
+    background: conic-gradient(red,
+            orange,
+            yellow,
+            green,
+            cyan,
+            blue,
+            violet,
+            red);
+    filter: blur(12px);
+    animation: spin 4s linear infinite;
+    z-index: 1;
+}
+
+/* 模擬頭貼的圓形區塊 */
+.placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #ccc;
+    /* 可以改為任何顏色 */
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
