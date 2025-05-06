@@ -4,6 +4,7 @@ import { NextSeo } from 'next-seo'
 import Layout from '@/components/Layout'
 import { Box, Card, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
+import { GitHub } from '@mui/icons-material'
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -84,36 +85,75 @@ export default function EffectsGallery() {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Box sx={{}} >
+                        <Box
+                            display={'grid'}
+                            gridTemplateColumns={{
+                                xs: '1fr',
+                                md: '1fr 1fr',
+                                xl: '1fr 1fr 1fr'
+                            }}
+                            columnGap={'15px'}
+                        >
                             {effects.map((effect) => (
-                                <Card key={effect.slug} sx={{ p: 4, mb: 2 }}>
-                                    <Box display={'flex'} flexDirection={'row'} gap={'10px'}>
-                                        <Box sx={{
-                                            width: '100px',
-                                            height: '100px'
-                                        }}>
+                                <Card
+                                    key={effect.slug}
+                                    sx={{
+                                        p: 2,
+                                        mb: '15px',
+                                        borderRadius: 2,
+                                        boxShadow: 8
+                                    }}
+                                >
+                                    <Box
+                                        display={'flex'}
+                                        flexDirection={'row'}
+                                        gap={'10px'}
+                                        alignItems={'center'}
+                                    >
+                                        <Box
+                                            width={'100px'}
+                                            height={'100px'}
+                                            flexShrink={0}
+                                        >
                                             <video
                                                 src={`/videos/${effect.slug}.webm`}
                                                 preload="none"
                                                 muted
                                                 loop
                                                 playsInline
-                                                style={{ borderRadius: '10px', width: '100%', height: '100%', objectFit: 'cover' }}
+                                                style={{ objectFit: 'cover', width: '100%', height: '100%', borderRadius: '10px' }}
                                                 onMouseOver={(e) => (e.currentTarget as HTMLVideoElement).play()}
                                                 onMouseOut={(e) => (e.currentTarget as HTMLVideoElement).pause()}
                                             />
                                         </Box>
-                                        <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
+                                        <Box
+                                            flex={1}
+                                            display={'flex'}
+                                            flexDirection={'column'}
+                                            justifyContent={'space-between'}
+                                            minHeight={'100px'}
+                                        >
                                             <Box>
-                                                <Link href={`/effects/${effect.slug}`}>
+                                                <Link style={{ fontWeight: 'bold' }} href={`/effects/${effect.slug}`}>
                                                     {effect.titles['en']}
                                                 </Link>
-                                                <Typography sx={{ color: 'gray' }}>
+                                                <Typography
+                                                    color={'gray'}
+                                                    title={effect.descriptions['en']}
+                                                    display={'-webkit-box'}
+                                                    overflow={'hidden'}
+                                                    textOverflow={'ellipsis'}
+                                                    sx={{
+                                                        WebkitLineClamp: 2,
+                                                        WebkitBoxOrient: 'vertical'
+                                                    }}
+                                                >
                                                     {effect.descriptions['en']}
                                                 </Typography>
                                             </Box>
+
                                             <Box>
-                                                github link
+                                                <GitHub />
                                             </Box>
                                         </Box>
                                     </Box>
