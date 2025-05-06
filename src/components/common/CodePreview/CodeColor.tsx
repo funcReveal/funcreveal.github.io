@@ -9,8 +9,8 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CodeBlockProps {
     code: string;
@@ -84,7 +84,7 @@ const CodeColor: React.FC<CodeBlockProps> = ({ code, language, githubUrl, fileNa
 
             <SyntaxHighlighter
                 language={language === 'tsx' ? 'typescript' : language}
-                style={vscDarkPlus}
+                style={dark}
                 showLineNumbers
                 wrapLines
                 customStyle={{ margin: 0, padding: '1rem', background: '#1e1e1e', fontSize: 13 }}
