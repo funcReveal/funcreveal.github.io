@@ -1,12 +1,20 @@
 import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
+import { Box } from '@mui/material'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <div style={{ height: '100vh' }}>
+        <Box
+            display="flex"
+            flexDirection="column"
+            minHeight="100vh"
+        >
             <Header />
-            <main style={{ height: '100%', width: '100%', backgroundColor: 'transparent' }}>{children}</main >
+            <Box component="main" flexGrow={1}>
+                {children}
+            </Box>
             <Footer />
-        </div>
+        </Box>
+
     )
 }
