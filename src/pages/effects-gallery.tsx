@@ -23,7 +23,7 @@ interface effectProps {
 }
 
 function CustomTabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
+    const { children, value, index, ...other } = props
 
     return (
         <div
@@ -49,9 +49,9 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
 
     const handleClick = async () => {
         try {
-            const url = `https://view-counter.funcreveal.workers.dev/?slug=${effect.slug}`;
+            const url = `https://view-counter.funcreveal.workers.dev/?slug=${effect.slug}`
 
-            navigator.sendBeacon(url);
+            navigator.sendBeacon(url)
         } catch (err) {
             console.error('Failed to increment view', err)
         }
@@ -113,21 +113,21 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
 
 
 export default function EffectsGallery() {
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(0)
 
     const [allViews, setAllViews] = useState<Record<string, number>>({})
 
     useEffect(() => {
         const fetchAllViews = async () => {
-            const cached = sessionStorage.getItem('funcReveal_allViews');
-            const cachedTime = sessionStorage.getItem('funcReveal_allViews_time');
-            const now = Date.now();
+            const cached = sessionStorage.getItem('funcReveal_allViews')
+            const cachedTime = sessionStorage.getItem('funcReveal_allViews_time')
+            const now = Date.now()
 
             // expiration 5 minute
             if (cached && cachedTime && now - parseInt(cachedTime) < 5 * 60 * 1000) {
-                const parsed = JSON.parse(cached);
-                setAllViews(parsed);
-                return;
+                const parsed = JSON.parse(cached)
+                setAllViews(parsed)
+                return
             }
 
             try {
@@ -136,6 +136,7 @@ export default function EffectsGallery() {
                 const data = await res.json()
                 setAllViews(data.views || {})
                 sessionStorage.setItem('funcReveal_allViews', JSON.stringify(data.views || {}))
+                sessionStorage.setItem('funcReveal_allViews_time', now.toString())
             } catch (err) {
                 console.error('Failed to fetch all views', err)
             }
@@ -145,7 +146,7 @@ export default function EffectsGallery() {
     }, [])
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
+        setValue(newValue)
     };
 
     const tabsStyles = {
