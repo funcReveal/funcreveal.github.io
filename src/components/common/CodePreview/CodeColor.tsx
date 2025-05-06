@@ -9,7 +9,7 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CodeBlockProps {
@@ -49,7 +49,6 @@ const CodeColor: React.FC<CodeBlockProps> = ({ code, language, githubUrl, fileNa
 
     return (
         <Box sx={{ bgcolor: '#1e1e1e', borderRadius: 1, overflow: 'hidden', mb: 2 }}>
-            {/* 頂部控制列 */}
             <Box
                 sx={{
                     px: 1.5,
