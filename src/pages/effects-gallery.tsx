@@ -134,6 +134,7 @@ export default function EffectsGallery() {
                 const slugs = effects.map(e => e.slug).join(',')
                 const res = await fetch(`https://view-counter.funcreveal.workers.dev/?slugs=${slugs}&queryOnly=1`)
                 const data = await res.json()
+
                 setAllViews(data.views || {})
                 sessionStorage.setItem('funcReveal_allViews', JSON.stringify(data.views || {}))
                 sessionStorage.setItem('funcReveal_allViews_time', now.toString())
@@ -171,8 +172,8 @@ export default function EffectsGallery() {
                     description="A list of interactive CSS + JS effects."
                     canonical="https://funcreveal.github.io/effects-gallery/"
                     languageAlternates={[
-                        { hrefLang: 'zh-TW', href: 'https://funcreveal.github.io/zh-TW' },
-                        { hrefLang: 'zh-CN', href: 'https://funcreveal.github.io/zh-CN/' },
+                        { hrefLang: 'zh-TW', href: 'https://funcreveal.github.io/zh-TW/effects-gallery/' },
+                        { hrefLang: 'zh-CN', href: 'https://funcreveal.github.io/zh-CN/effects-gallery/' },
                     ]}
                 />
                 <Box sx={{ backgroundColor: 'gray' }}>
@@ -188,7 +189,6 @@ export default function EffectsGallery() {
                         >
                             <Tab sx={tabStyles} label="NEWEST" {...a11yProps(0)} />
                             <Tab sx={tabStyles} label="POPULAR" {...a11yProps(1)} />
-                            <Tab sx={tabStyles} label="Item Three" {...a11yProps(2)} />
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
@@ -207,18 +207,19 @@ export default function EffectsGallery() {
                         </Box>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Box >
+                        <Box
+                            display={'grid'}
+                            gridTemplateColumns={{
+                                xs: '1fr',
+                                md: '1fr 1fr',
+                                xl: '1fr 1fr 1fr'
+                            }}
+                            columnGap={'15px'}
+                        >
                             {effects.map((effect) => (
-                                <Card key={effect.slug} sx={{ p: 4, mb: 2 }}>
-                                    <Link href={`/effects/${effect.slug}`}>
-                                        {effect.titles['en']}
-                                    </Link>
-                                </Card>
+                                <EffectCard key={effect.slug} effect={effect} views={allViews[effect.slug] ?? 0} />
                             ))}
                         </Box>
-                    </CustomTabPanel>
-                    <CustomTabPanel value={value} index={2}>
-                        Item Three
                     </CustomTabPanel>
                 </Box>
             </Layout>
