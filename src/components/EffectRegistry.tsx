@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import { JSX } from 'react'
 
-const GlowButton = dynamic(() => import('./effects/BreathingLight/BreathingLight'), { ssr: false })
+const GlowButton = dynamic(() => import('./effects/GlowButton/GlowButton'), { ssr: false })
 const AnimatedBorder = dynamic(() => import('./effects/AnimatedBorder/AnimatedBorder'), { ssr: false })
 const BreathingLight = dynamic(() => import('./effects/BreathingLight/BreathingLight'), { ssr: false })
 
