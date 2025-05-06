@@ -9,9 +9,15 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+// import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+// 支援的主題動態載入
+const PrismStyles = {
+    duotoneLight: () => import('react-syntax-highlighter/dist/esm/styles/prism').then(m => m.duotoneLight),
+    coldarkDark: () => import('react-syntax-highlighter/dist/esm/styles/prism').then(m => m.coldarkDark),
+};
 interface CodeBlockProps {
     code: string;
     language: 'tsx' | 'css' | 'ts' | 'js';
@@ -21,6 +27,8 @@ interface CodeBlockProps {
 
 const CodeColor: React.FC<CodeBlockProps> = ({ code, language, githubUrl, fileName }) => {
     const [mounted, setMounted] = useState(false);
+    type PrismStyle = Record<string, React.CSSProperties>;
+    const [style, setStyle] = useState<PrismStyle | null>(null);
     const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
         open: false,
         message: '',
@@ -29,6 +37,8 @@ const CodeColor: React.FC<CodeBlockProps> = ({ code, language, githubUrl, fileNa
 
     useEffect(() => {
         setMounted(true);
+        // 載入主題（你也可以替換成 duotoneLight）
+        PrismStyles.coldarkDark().then(setStyle);
     }, []);
 
     const handleCopy = async () => {
@@ -45,7 +55,7 @@ const CodeColor: React.FC<CodeBlockProps> = ({ code, language, githubUrl, fileNa
         setSnackbar({ ...snackbar, open: false });
     };
 
-    if (!mounted) return null;
+    if (!mounted || !style) return null;
 
     return (
         <Box sx={{ bgcolor: '#1e1e1e', borderRadius: 1, overflow: 'hidden', mb: 2 }}>

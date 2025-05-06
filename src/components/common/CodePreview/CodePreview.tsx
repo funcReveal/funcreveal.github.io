@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, ButtonGroup } from '@mui/material';
+import { Button, ButtonGroup } from '@mui/material';
 import CodeColor from './CodeColor';
 
 interface Props {

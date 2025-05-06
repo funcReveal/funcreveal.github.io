@@ -66,4 +66,18 @@ export const effects = [
     },
     component: "AnimatedBorder",
   },
+  {
+    slug: "breathing-light",
+    titles: {
+      en: "Breathing Light",
+      "zh-TW": "呼吸燈樣式",
+      "zh-CN": "呼吸灯样式"
+    },
+    descriptions: {
+      en: "A breathing‑light style glow effect you can wrap around circular elements.",
+      "zh-TW": "呼吸燈樣式的發光邊框效果，可圍繞於圓形元素。",
+      "zh-CN": "呼吸灯样式的发光边框效果，可围绕于圆形元素。"
+    },
+    component: "BreathingLight"
+  },
 ];
