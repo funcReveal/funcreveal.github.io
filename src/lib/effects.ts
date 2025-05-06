@@ -52,4 +52,18 @@ export const effects = [
     },
     component: "ButtonGlow",
   },
+  {
+    slug: "animated-border",
+    titles: {
+      en: "Dynamic border effects",
+      "zh-TW": "動態邊框特效",
+      "zh-CN": "动态边框特效",
+    },
+    descriptions: {
+      en: "A border effect that can be placed around circular objects.",
+      "zh-TW": "可圍繞在圓形物體的邊框特效。",
+      "zh-CN": "可围绕在圆形物体的边框特效。",
+    },
+    component: "AnimatedBorder",
+  },
 ];
