@@ -1,11 +1,11 @@
 import dynamic from 'next/dynamic'
 import { JSX } from 'react'
 
-const ButtonGlow = dynamic(() => import('./effects/ButtonGlow/ButtonGlow'), { ssr: false })
+const GlowButton = dynamic(() => import('./effects/GlowButton/GlowButton'), { ssr: false })
 const AnimatedBorder = dynamic(() => import('./effects/AnimatedBorder/AnimatedBorder'), { ssr: false })
 
 const registry: Record<string, JSX.Element> = {
-    'button-glow': <ButtonGlow />,
+    'glow-button': <GlowButton />,
     'animated-border': <AnimatedBorder />,
     // Add more: 'effect-slug': <Component />
 }

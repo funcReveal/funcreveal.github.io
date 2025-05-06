@@ -39,16 +39,16 @@ export const effects = [
     },
   },
   {
-    slug: "button-glow",
+    slug: "glow-button",
     titles: {
       en: "Glow Button",
-      "zh-TW": "發光按鈕",
-      "zh-CN": "发光按钮",
+      "zh-TW": "會發光的按鈕",
+      "zh-CN": "会发光的按钮",
     },
     descriptions: {
       en: "A glowing button on hover.",
-      "zh-TW": "懸停時發光的按鈕。",
-      "zh-CN": "悬停时发光的按钮。",
+      "zh-TW": "懸停時會發光的按鈕。",
+      "zh-CN": "悬停时会发光的按钮。",
     },
     component: "ButtonGlow",
   },
