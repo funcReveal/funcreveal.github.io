@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, ButtonGroup } from '@mui/material';
-// import CodeColor from './CodeColor';
+import CodeColor from './CodeColor';
 
 interface Props {
     tsxCode: string;
@@ -11,17 +11,11 @@ interface Props {
 }
 
 const CodePreview: React.FC<Props> = ({ tsxCode, cssCode, githubUrl, TSXName, CSSName }) => {
-    console.log(tsxCode)
-    console.log(cssCode)
-    console.log(githubUrl)
-    console.log(TSXName)
-    console.log(CSSName)
     const [view, setView] = useState<'tsx' | 'css'>('tsx');
 
     return (
 
         <>
-            {/* 左上角：語言切換 */}
             <ButtonGroup size="small" variant="outlined" color="primary" sx={{ mb: 1 }}>
                 <Button onClick={() => setView('tsx')} variant={view === 'tsx' ? 'contained' : 'outlined'}>
                     TSX
@@ -31,13 +25,12 @@ const CodePreview: React.FC<Props> = ({ tsxCode, cssCode, githubUrl, TSXName, CS
                 </Button>
             </ButtonGroup>
 
-            {/* 對應語言的程式碼區塊
             {view === 'tsx' && (
-                // <CodeColor code={tsxCode} language="tsx" githubUrl={githubUrl} fileName={TSXName} />
+                <CodeColor code={tsxCode} language="tsx" githubUrl={githubUrl} fileName={TSXName} />
             )}
             {view === 'css' && (
-                // <CodeColor code={cssCode} language="css" githubUrl={githubUrl} fileName={CSSName} />
-            )} */}
+                <CodeColor code={cssCode} language="css" githubUrl={githubUrl} fileName={CSSName} />
+            )}
         </>
 
     );

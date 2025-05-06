@@ -1,14 +1,14 @@
 interface EffectSource {
-    tsxCode: string;
-    cssCode: string;
-    githubUrl: string;
-    TSXName: string;
-    CSSName: string;
-  }
-  
-  export const effectSources: Record<string, EffectSource> = {
-    'animated-border': {
-      tsxCode: `import React from 'react';
+  tsxCode: string;
+  cssCode: string;
+  githubUrl: string;
+  TSXName: string;
+  CSSName: string;
+}
+
+export const effectSources: Record<string, EffectSource> = {
+  "animated-border": {
+    tsxCode: `import React from 'react';
 import styles from './AnimatedBorder.module.css';
 
 /**
@@ -31,7 +31,7 @@ const AnimatedBorder = () => {
 
 export default AnimatedBorder;
     `,
-      cssCode: `/* =====================================
+    cssCode: `/* =====================================
    Container for the Circular Glow Effect
    ===================================== */
 .container {
@@ -93,12 +93,12 @@ export default AnimatedBorder;
     }
 }
     `,
-      githubUrl: 'https://github.com/funcReveal/effects-gallery',
-      TSXName:'AnimatedBorder.tsx',
-      CSSName:'AnimatedBorder.module.css',
-    },
-    'glow-button': {
-      tsxCode: `import React from 'react';
+    githubUrl: "https://github.com/funcReveal/effects-gallery",
+    TSXName: "AnimatedBorder.tsx",
+    CSSName: "AnimatedBorder.module.css",
+  },
+  "glow-button": {
+    tsxCode: `import React from 'react';
 import styles from './GlowButton.module.css'; // You can also use styled-components or Emotion
 
 /**
@@ -117,7 +117,7 @@ const GlowButton = () => {
 
 export default GlowButton;
       `,
-      cssCode: `/* =============================
+    cssCode: `/* =============================
    Glowing Button with Hover Effect
    ============================= */
 .glowButton {
@@ -143,8 +143,8 @@ export default GlowButton;
   box-shadow: 0 0 20px #0ff, /* Stronger outer glow */ 0 0 30px #0ff inset; /* Stronger inner glow */
 }  
       `,
-      githubUrl: 'https://github.com/funcReveal/effects-gallery',
-      TSXName:'GlowButton.tsx',
-      CSSName:'GlowButton.module.css',
-    },
-  };
+    githubUrl: "https://github.com/funcReveal/effects-gallery",
+    TSXName: "GlowButton.tsx",
+    CSSName: "GlowButton.module.css",
+  },
+};

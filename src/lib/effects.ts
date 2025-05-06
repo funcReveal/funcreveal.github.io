@@ -50,7 +50,7 @@ export const effects = [
       "zh-TW": "懸停時會發光的按鈕。",
       "zh-CN": "悬停时会发光的按钮。",
     },
-    component: "ButtonGlow",
+    component: "GlowButton",
   },
   {
     slug: "animated-border",

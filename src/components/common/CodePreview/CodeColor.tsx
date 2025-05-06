@@ -9,8 +9,8 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { createHighlighter } from 'shiki';
+import { createOnigurumaEngine } from 'shiki/engine/oniguruma'
 
 interface CodeBlockProps {
     code: string;
@@ -21,6 +21,7 @@ interface CodeBlockProps {
 
 const CodeColor: React.FC<CodeBlockProps> = ({ code, language, githubUrl, fileName }) => {
     const [mounted, setMounted] = useState(false);
+    const [highlightedCode, setHighlightedCode] = useState<string>('');
     const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
         open: false,
         message: '',
@@ -29,15 +30,34 @@ const CodeColor: React.FC<CodeBlockProps> = ({ code, language, githubUrl, fileNa
 
     useEffect(() => {
         setMounted(true);
-    }, []);
+
+        const loadHighlighter = async () => {
+            const highlighter = await createHighlighter({
+                themes: ['dark-plus'],
+                langs: ['tsx', 'css', 'jsx'],
+                engine: createOnigurumaEngine(import('shiki/wasm'))
+            });
+
+            const highlighted = highlighter.codeToHtml(
+                code,
+                {
+                    lang: language,
+                    theme: 'dark-plus',
+                }
+            );
+            setHighlightedCode(highlighted);
+        };
+
+        loadHighlighter();
+    }, [code, language]);
 
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(code);
-            setSnackbar({ open: true, message: '複製成功', severity: 'success' });
+            setSnackbar({ open: true, message: 'copied', severity: 'success' });
         } catch (err) {
-            console.error('複製失敗:', err);
-            setSnackbar({ open: true, message: '複製失敗', severity: 'error' });
+            console.error('copied fail:', err);
+            setSnackbar({ open: true, message: 'failed', severity: 'error' });
         }
     };
 
@@ -61,7 +81,7 @@ const CodeColor: React.FC<CodeBlockProps> = ({ code, language, githubUrl, fileNa
                 }}
             >
                 <Typography variant="caption" sx={{ color: '#ccc' }}>
-                    {(fileName ? fileName : language)}
+                    {fileName ? fileName : language}
                 </Typography>
                 <Box>
                     <IconButton size="small" onClick={handleCopy} color="inherit">
@@ -81,16 +101,18 @@ const CodeColor: React.FC<CodeBlockProps> = ({ code, language, githubUrl, fileNa
                 </Box>
             </Box>
 
-            <SyntaxHighlighter
-                language={language === 'tsx' ? 'typescript' : language}
-                style={dark}
-                showLineNumbers
-                wrapLines
-                customStyle={{ margin: 0, padding: '1rem', background: '#1e1e1e', fontSize: 13 }}
-                lineNumberStyle={{ minWidth: '2.5em', paddingRight: '10px', color: '#888' }}
-            >
-                {code}
-            </SyntaxHighlighter>
+            <Box
+                sx={{
+                    margin: 0,
+                    padding: '1rem',
+                    fontSize: '1rem',
+                    overflowX: 'auto',
+                    '& pre': {
+                        backgroundColor: 'transparent !important',
+                    },
+                }}
+                dangerouslySetInnerHTML={{ __html: highlightedCode }}
+            />
 
             <Snackbar
                 open={snackbar.open}
