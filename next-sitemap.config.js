@@ -27,20 +27,6 @@ module.exports = {
       changefreq,
       priority,
       lastmod: new Date().toISOString(),
-      alternateRefs: [
-        {
-          href: `https://funcreveal.github.io${path}`,
-          hreflang: "en",
-        },
-        {
-          href: `https://funcreveal.github.io/zh-TW${path}`,
-          hreflang: "zh-TW",
-        },
-        {
-          href: `https://funcreveal.github.io/zh-CN${path}`,
-          hreflang: "zh-CN",
-        },
-      ],
     };
   },
   robotsTxtOptions: {
