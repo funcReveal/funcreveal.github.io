@@ -56,7 +56,14 @@ const Header = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                     <Link href={homePath} passHref>
                         <Box>
-                            <Image alt='logo' src={'/logo.PSD'} width={50} height={50} />
+                            <Image
+                                priority
+                                alt='logo'
+                                src={'/logo.svg'}
+                                width={50}
+                                height={50}
+                                sizes="50px"
+                            />
                         </Box>
                     </Link>
                     <Navbar />

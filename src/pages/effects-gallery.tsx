@@ -85,14 +85,14 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                             {effect.titles['en']}
                         </Link>
                         <Typography
-                            color={'gray'}
+                            color={'#6e6e6e'}
                             title={effect.descriptions['en']}
                             display={'-webkit-box'}
                             overflow={'hidden'}
                             textOverflow={'ellipsis'}
                             sx={{
                                 WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical'
+                                WebkitBoxOrient: 'vertical',
                             }}
                         >
                             {effect.descriptions['en']}

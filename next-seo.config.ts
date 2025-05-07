@@ -1,10 +1,11 @@
 const config = {
   title: "funcReveal",
-  description: "展示 CSS + JS 特效的官方網站。",
+  description:
+    "Showcasing creative CSS and JavaScript effects to enhance your web projects.",
   canonical: "https://funcreveal.github.io",
   openGraph: {
     type: "website",
-    locale: "zh-TW",
+    locale: "en_US",
     url: "https://funcreveal.github.io",
     siteName: "funcReveal",
     images: [
@@ -16,6 +17,11 @@ const config = {
       },
     ],
   },
+  // twitter: {
+  //   handle: "@yourtwitter",
+  //   site: "@yourtwitter",
+  //   cardType: "summary_large_image",
+  // },
 };
 
 export default config;
