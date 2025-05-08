@@ -21,16 +21,8 @@
   width: calc(100% + 24px); /* Expand beyond the container */
   height: calc(100% + 24px);
   border-radius: 50%; /* Keep it circular */
-  background: conic-gradient(
-    /* Rainbow gradient effect */ red,
-    orange,
-    yellow,
-    green,
-    cyan,
-    blue,
-    violet,
-    red
-  );
+  /* Rainbow gradient effect */
+  background: conic-gradient(red, orange, yellow, green, blue, purple, red);
   filter: blur(12px); /* Soft blur for glow effect */
   animation: spin 4s linear infinite; /* Infinite spinning animation */
   z-index: 1; /* Positioned below the placeholder */

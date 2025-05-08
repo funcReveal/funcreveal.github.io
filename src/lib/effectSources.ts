@@ -99,7 +99,7 @@ export default AnimatedBorder;
 }
 `,
     githubUrl:
-      "https://github.com/funcReveal/effects-gallery/tree/main/js-css-effects/animated-border",
+      "https://github.com/funcReveal/effects-gallery/tree/main/static-effects/animated-border",
     TSXName: "AnimatedBorder.tsx",
     CSSName: "AnimatedBorder.module.css",
   },

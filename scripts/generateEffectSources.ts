@@ -7,26 +7,25 @@
 // 依賴：npm i -D ts-node typescript fast-glob
 // -----------------------------------------------------
 
-import fs from 'fs';
-import path from 'path';
-import fg from 'fast-glob';
+import fs from "fs";
+import path from "path";
+import fg from "fast-glob";
 
 // --------------------------------- 工具函式
 /** 把字串安全地放進 JS template literal (`…`) */
 function escapeForTemplateLiteral(str: string) {
   return str
-    .replace(/\\/g, '\\\\')    // 先跳脫 backslash
-    .replace(/`/g, '\\`')      // 跳脫反引號
-    .replace(/\$\{/g, '\\${'); // 避免提早結束 template
+    .replace(/\\/g, "\\\\") // 先跳脫 backslash
+    .replace(/`/g, "\\`") // 跳脫反引號
+    .replace(/\$\{/g, "\\${"); // 避免提早結束 template
 }
 
 /** 取對應 CSS 路徑（優先 .module.css，其次 .css） */
 function findCss(file: string) {
   const dir = path.dirname(file);
-  const baseName = path.basename(file, '.tsx');
-  const try1 = path.join(dir, `${baseName}.module.css`);
-  const try2 = path.join(dir, `${baseName}.css`);
-  return fs.existsSync(try1) ? try1 : fs.existsSync(try2) ? try2 : null;
+  const baseName = path.basename(file, ".tsx");
+  const cssFile = path.join(dir, `${baseName}.module.css`);
+  return fs.existsSync(cssFile) ? cssFile : null;
 }
 
 // --------------------------------- 主流程
@@ -34,35 +33,37 @@ async function main() {
   const [componentsDir, outFile] = process.argv.slice(2);
 
   if (!componentsDir || !outFile) {
-    console.error('❌  用法：ts-node generateEffectSources.ts <componentsDir> <outFile>');
+    console.error(
+      "❌  用法：ts-node generateEffectSources.ts <componentsDir> <outFile>"
+    );
     process.exit(1);
   }
 
   // 1. 找到所有 TSX
-  const tsxFiles = await fg(['**/*.tsx'], {
+  const tsxFiles = await fg(["**/*.tsx"], {
     cwd: componentsDir,
     absolute: true,
   });
 
   function toKebabCase(input: string) {
-    return input.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+    return input.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
   }
-  
+
   const sources: string[] = [];
-  
+
   for (const tsxPath of tsxFiles) {
-    const tsxCode = fs.readFileSync(tsxPath, 'utf8');
+    const tsxCode = fs.readFileSync(tsxPath, "utf8");
     const cssPath = findCss(tsxPath);
-  
-    const cssCode = cssPath ? fs.readFileSync(cssPath, 'utf8') : '';
-    const pascalName = path.basename(tsxPath, '.tsx');        // e.g. GlowButton
-    const kebabKey = toKebabCase(pascalName);                 // e.g. glow-button
-  
-    const tsxName = path.basename(tsxPath);                   // GlowButton.tsx
-    const cssName = cssPath ? path.basename(cssPath) : '';
-  
+
+    const cssCode = cssPath ? fs.readFileSync(cssPath, "utf8") : "";
+    const pascalName = path.basename(tsxPath, ".tsx"); // e.g. GlowButton
+    const kebabKey = toKebabCase(pascalName); // e.g. glow-button
+
+    const tsxName = path.basename(tsxPath); // GlowButton.tsx
+    const cssName = cssPath ? path.basename(cssPath) : "";
+
     const githubUrl = `https://github.com/funcReveal/effects-gallery/tree/main/js-css-effects/${kebabKey}`;
-  
+
     sources.push(`
     '${kebabKey}': {
       tsxCode: \`${escapeForTemplateLiteral(tsxCode)}\`,
@@ -87,12 +88,12 @@ export interface EffectSource {
   CSSName: string;
 }
 
-export const effectSources: Record<string, EffectSource> = {${sources.join(',')}
+export const effectSources: Record<string, EffectSource> = {${sources.join(",")}
 };
 `;
 
   // 3. 輸出
-  fs.writeFileSync(outFile, fileContent.trim() + '\n', 'utf8');
+  fs.writeFileSync(outFile, fileContent.trim() + "\n", "utf8");
   console.log(`✅  已產生 ${outFile}（共 ${sources.length} 個元件）`);
 }
 
