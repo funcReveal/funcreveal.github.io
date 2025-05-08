@@ -23,7 +23,7 @@ interface Effect {
   titles: { en: string };
   descriptions: { en: string };
   component: string;
-  created_time: CreatedTime;
+  createdTime: CreatedTime;
   type: string;
 }
 
@@ -124,7 +124,7 @@ async function main() {
         titles: { en: generateTitle(component) },
         descriptions: { en: "" },
         component,
-        created_time: generateCreatedTime(),
+        createdTime: generateCreatedTime(),
         type: "static",
       };
       updatedEffects.push(effect);

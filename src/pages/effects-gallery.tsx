@@ -14,12 +14,23 @@ interface TabPanelProps {
 
 interface effectProps {
     slug: string;
-    titles: {
-        [lang: string]: string;
+    titles?: {
+        [lang: string]: string | undefined;
     };
-    descriptions: {
-        [lang: string]: string;
+    descriptions?: {
+        [lang: string]: string | undefined;
     };
+    component?: string;
+    createdTime?: {
+        time: number;
+        year: number;
+        month: number;
+        day: number;
+        hour: number;
+        minute: number;
+        second: number;
+    };
+    type?: string;
 }
 
 function CustomTabPanel(props: TabPanelProps) {
@@ -82,11 +93,11 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                                 fontWeight: '600'
                             }}
                         >
-                            {effect.titles['en']}
+                            {effect.titles && effect.titles['en'] ? effect.titles['en'] : ''}
                         </Link>
                         <Typography
                             color={'#6e6e6e'}
-                            title={effect.descriptions['en']}
+                            title={effect.descriptions && effect.descriptions['en'] ? effect.descriptions['en'] : ''}
                             display={'-webkit-box'}
                             overflow={'hidden'}
                             textOverflow={'ellipsis'}
@@ -95,7 +106,7 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                                 WebkitBoxOrient: 'vertical',
                             }}
                         >
-                            {effect.descriptions['en']}
+                            {effect.descriptions && effect.descriptions['en'] ? effect.descriptions['en'] : ''}
                         </Typography>
                     </Box>
 

@@ -109,7 +109,7 @@ export const effects = [
       en: "",
     },
     component: "HeartTree",
-    created_time: {
+    createdTime: {
       time: 20250508224338,
       year: 2025,
       month: 5,
@@ -129,7 +129,7 @@ export const effects = [
       en: "",
     },
     component: "HeartTreeClick",
-    created_time: {
+    createdTime: {
       time: 20250508224338,
       year: 2025,
       month: 5,
