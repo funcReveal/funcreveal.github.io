@@ -65,6 +65,16 @@ export const effects = [
       "zh-CN": "可围绕在圆形物体的边框特效。",
     },
     component: "AnimatedBorder",
+    createdTime: {
+      time: 20250506235624,
+      year: 2025,
+      month: 5,
+      day: 6,
+      hour: 23,
+      minute: 56,
+      second: 24,
+    },
+    type: "static",
   },
   {
     slug: "breathing-light",
@@ -79,5 +89,55 @@ export const effects = [
       "zh-CN": "呼吸灯样式的发光边框效果，可围绕于圆形元素。",
     },
     component: "BreathingLight",
+    createdTime: {
+      time: 20250506235624,
+      year: 2025,
+      month: 5,
+      day: 6,
+      hour: 23,
+      minute: 56,
+      second: 24,
+    },
+    type: "static",
+  },
+  {
+    slug: "heart-tree",
+    titles: {
+      en: "Heart Tree",
+    },
+    descriptions: {
+      en: "",
+    },
+    component: "HeartTree",
+    created_time: {
+      time: 20250508224338,
+      year: 2025,
+      month: 5,
+      day: 8,
+      hour: 22,
+      minute: 43,
+      second: 38,
+    },
+    type: "static",
+  },
+  {
+    slug: "heart-tree-click",
+    titles: {
+      en: "Heart Tree Click",
+    },
+    descriptions: {
+      en: "",
+    },
+    component: "HeartTreeClick",
+    created_time: {
+      time: 20250508224338,
+      year: 2025,
+      month: 5,
+      day: 8,
+      hour: 22,
+      minute: 43,
+      second: 38,
+    },
+    type: "static",
   },
 ];

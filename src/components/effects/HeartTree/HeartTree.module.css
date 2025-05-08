@@ -1,0 +1,71 @@
+.container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(to top, #fce4ec, #ffffff);
+  overflow: hidden;
+}
+
+.tree {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 100px;
+  overflow: visible; /* ← 加這個 */
+}
+
+.trunk {
+  width: 20px;
+  height: 100%;
+  background: #8b5e3c;
+  margin: 0 auto;
+  border-radius: 5px;
+}
+
+.heart {
+  position: absolute;
+  top: -20px; /* 讓愛心從容器上方開始出現 */
+  width: 20px;
+  height: 20px;
+  background-color: #ff6b81;
+  transform: rotate(45deg);
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0.9;
+  border: 1px solid black;
+  z-index: 10;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: #ff6b81;
+  border-radius: 50%;
+}
+
+.heart::before {
+  top: -10px;
+  left: 0;
+}
+
+.heart::after {
+  left: -10px;
+  top: 0;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-20px) rotate(45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(400px) rotate(45deg);
+    opacity: 0;
+  }
+}

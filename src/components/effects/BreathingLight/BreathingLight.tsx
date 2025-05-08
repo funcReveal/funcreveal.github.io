@@ -1,9 +1,7 @@
-// BreathingLight.tsx
-// Simple breathing‑light component. Customize size, color and duration via props.
 import React from 'react';
 import styles from './BreathingLight.module.css';
 
-export interface BreathingLightProps {
+interface BreathingLightProps {
     /** Diameter in px (default 24) */
     size?: number;
     /** Base glow color (default #00e5ff) */

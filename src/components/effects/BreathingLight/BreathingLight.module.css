@@ -1,5 +1,3 @@
-/* BreathingLight.module.css */
-/* A circular light that “breathes” by scaling and changing opacity. */
 .breathingLight {
   /* Default CSS variables (override via inline style) */
   --size: 24px; /* Diameter of the circle */
