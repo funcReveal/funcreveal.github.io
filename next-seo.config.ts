@@ -1,7 +1,7 @@
 const config = {
-  title: "funcReveal",
+  title: "funcReveal – Creative CSS & JavaScript Effects",
   description:
-    "Showcasing creative CSS and JavaScript effects to enhance your web projects.",
+    "Explore creative front-end effects with live demos, free source codes, and tutorials.",
   canonical: "https://funcreveal.github.io",
   openGraph: {
     type: "website",

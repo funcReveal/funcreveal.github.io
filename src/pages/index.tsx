@@ -30,8 +30,8 @@ export default function Home() {
   return (
     <Layout>
       <NextSeo
-        title="funcReveal"
-        description="Explore CSS + JavaScript effects."
+        title="funcReveal – Creative CSS & JavaScript Effects"
+        description="Explore creative front-end effects with live demos, free source codes, and tutorials."
         canonical="https://funcreveal.github.io/"
         languageAlternates={[
           { hrefLang: 'zh-TW', href: 'https://funcreveal.github.io/zh-TW' },
