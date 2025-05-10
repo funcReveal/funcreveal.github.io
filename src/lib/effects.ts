@@ -141,3 +141,5 @@ export const effects = [
     type: "static",
   },
 ];
+
+export const effectsMap = new Map(effects.map((e) => [e.slug, e]));
