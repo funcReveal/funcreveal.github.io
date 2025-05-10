@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL,
+  siteUrl: "https://funcreveal.github.io",
   generateRobotsTxt: true,
   outDir: "./out",
   exclude: ["/404"],
