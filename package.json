@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "scripts": "ts-node -P tsconfig.scripts.json scripts/generateAllEffects.ts",
-    "build": "next build && next-sitemap --config next-sitemap.config.js && echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?>' | cat - ./out/sitemap.xml > temp.xml && mv temp.xml ./out/sitemap.xml",
+    "build": "next build && next-sitemap --config next-sitemap.config.js",
     "start": "next start",
     "lint": "next lint"
   },
