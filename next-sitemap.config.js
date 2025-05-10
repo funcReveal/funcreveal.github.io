@@ -36,6 +36,5 @@ module.exports = {
         allow: "/",
       },
     ],
-    additionalSitemaps: ["https://funcreveal.github.io/sitemap-0.xml"],
   },
 };
