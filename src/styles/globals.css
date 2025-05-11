@@ -1,19 +1,21 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: rgb(255, 255, 255);
+  --foreground: rgb(23, 23, 23);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: rgb(10, 10, 10);
+    --background-20: rgb(10, 10, 10, 0.2);
+    --foreground: rgb(237, 237, 237);
+    --foreground-20: rgb(237, 237, 237, 0.2);
   }
 }
 
 html,
 body {
   max-width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   overflow-x: hidden;
 }
 

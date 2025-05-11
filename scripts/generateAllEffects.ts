@@ -21,10 +21,11 @@ interface CreatedTime {
 interface Effect {
   slug: string;
   titles: { en: string };
-  descriptions: { en: string };
+  descriptions: { en: string, "zh-TW": string, "zh-CN": string };
   component: string;
   createdTime: CreatedTime;
   type: string;
+  category: string;
 }
 
 interface EffectSource {
@@ -105,6 +106,8 @@ async function main() {
   const updatedEffects: Effect[] = [...existing];
   const effectSources: Record<string, EffectSource> = {};
 
+  const effectsMap = "export const effectsMap = new Map(effects.map((v) => [v.slug, v]));";
+
   for (const tsxPath of files) {
     const tsxCode = fs.readFileSync(tsxPath, "utf8");
     const cssPath = findCss(tsxPath);
@@ -122,10 +125,11 @@ async function main() {
       effect = {
         slug,
         titles: { en: generateTitle(component) },
-        descriptions: { en: "" },
+        descriptions: { en: "", "zh-TW": "", "zh-CN": "" },
         component,
         createdTime: generateCreatedTime(),
         type: "static",
+        category: "",
       };
       updatedEffects.push(effect);
     }
@@ -143,8 +147,7 @@ async function main() {
 
   // 寫入 effects.ts
   const effectsString =
-    "export const effects = " + JSON.stringify(updatedEffects, null, 2) + ";\n";
-
+    "export const effects = " + JSON.stringify(updatedEffects, null, 2) + ";\n\n" + effectsMap;
   fs.writeFileSync(EFFECTS_FILE, effectsString, "utf8");
 
   // 寫入 effectSources.ts

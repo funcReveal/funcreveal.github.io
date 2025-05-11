@@ -1,0 +1,14 @@
+.container {
+  position: relative; /* Allows the canvas inside to be absolutely positioned relative to this box */
+  width: 100%; /* Fixed width of the particle area */
+  height: 100%; /* Fixed height of the particle area */
+  overflow: hidden; /* Hide any particles that fall outside the box */
+  border: 1px solid #ccc; /* Light gray border for visibility */
+  background: linear-gradient(
+    to bottom,
+    #8883a5,
+    #4e4767
+  ); /* Light pink background color */
+  border-radius: 30px; /* Rounded corners for a soft look */
+  z-index: 1; /* Ensure this container stays above default layers */
+}
