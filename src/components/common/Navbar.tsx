@@ -1,23 +1,19 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
-// import { useMemo } from "react"
-import styles from './Navbar.module.css' // We'll create this
+import styles from './Navbar.module.css'
+
+import { detectLang, navLabels, defaultLang, Lang } from '@/lib/i18n'
 
 const Navbar = () => {
     const router = useRouter()
     const { asPath } = router
 
-    // Detect current language
-    let currentLang: 'en' | 'zh-TW' | 'zh-CN' = 'en'
-    if (asPath.startsWith('/zh-TW')) currentLang = 'zh-TW'
-    else if (asPath.startsWith('/zh-CN')) currentLang = 'zh-CN'
+    const currentLang: Lang = detectLang(asPath)
+    const prefix = currentLang === defaultLang ? '' : `/${currentLang}`
 
-    const prefix = currentLang === 'en' ? '' : `/${currentLang}`
-
-    // Pages
     const pages = [
-        { path: `${prefix}/notes`, label: currentLang === 'en' ? 'Notes' : '筆記' },
-        { path: `${prefix}/effects-gallery`, label: currentLang === 'en' ? 'Effects' : '特效' },
+        // { key: 'notes', path: `${prefix}/notes` },
+        { key: 'effects', path: `${prefix}/effects-gallery` },
     ]
 
     return (
@@ -29,7 +25,7 @@ const Navbar = () => {
                             href={page.path}
                             className={asPath.startsWith(page.path) ? styles.activeLink : styles.link}
                         >
-                            {page.label}
+                            {navLabels[currentLang][page.key]}
                         </Link>
                     </li>
                 ))}

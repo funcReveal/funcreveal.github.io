@@ -9,7 +9,8 @@ export default function Footer() {
                 py: 2,
                 backgroundColor: 'var(--background)',
                 color: 'var(--foreground)',
-                fontSize: '0.8rem'
+                fontSize: '0.8rem',
+                whiteSpace: 'nowrap'
             }}
         >
             © 2025{new Date().getFullYear() > 2025 ? ` ~ ${new Date().getFullYear()}` : ''} funcReveal. All rights reserved. <br />

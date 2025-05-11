@@ -1,17 +1,20 @@
 import { NextSeo } from 'next-seo'
-import { effects } from '@/lib/effects'
-import { effectSources } from '@/lib/effectSources'
-import { getEffectComponent } from './EffectRegistry'
-import Layout from './Layout';
 import { Box } from '@mui/material';
 
+import { getEffectComponent } from './EffectRegistry'
+import Layout from './Layout';
 import CodePreview from './common/CodePreview/CodePreview';
+import { useTrackView } from '@/shared/viewCounter';
+
+import { effectsMap } from '@/lib/effects'
+import { effectSources } from '@/lib/effectSources'
 
 export default function EffectPage({ slug, locale }: { slug: string; locale: 'en' | 'zh-TW' | 'zh-CN' }) {
-    const effect = effects.find((e) => e.slug === slug)
+    const effect = effectsMap.get(slug)
     const Demo = getEffectComponent(slug)
     const source = effectSources[slug]
 
+    useTrackView(slug)
 
     if (!effect) {
         return <p>{locale === 'zh-CN' ? '页面未找到' : locale === 'zh-TW' ? '找不到頁面' : 'Page not found'}</p>
@@ -20,7 +23,6 @@ export default function EffectPage({ slug, locale }: { slug: string; locale: 'en
     return (
         <>
             <Layout>
-
                 <NextSeo
                     title={`funcReveal | ${effect.titles[locale]}`}
                     description={effect.descriptions[locale]}

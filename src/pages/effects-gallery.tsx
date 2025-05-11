@@ -3,8 +3,9 @@ import { effects } from '@/lib/effects'
 import { NextSeo } from 'next-seo'
 import Layout from '@/components/Layout'
 import { Box, Card, Tab, Tabs, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { GitHub } from '@mui/icons-material'
+import { useFetchAllViews } from '@/shared/viewCounter'
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -57,17 +58,6 @@ function a11yProps(index: number) {
 }
 
 function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
-
-    const handleClick = async () => {
-        try {
-            const url = `https://view-counter.funcreveal.workers.dev/?slug=${effect.slug}`
-
-            navigator.sendBeacon(url)
-        } catch (err) {
-            console.error('Failed to increment view', err)
-        }
-    }
-
     return (
         <Card sx={{ p: 2, mb: '15px', borderRadius: 2, boxShadow: 8 }}>
             <Box display={'flex'} flexDirection={'row'} gap={'10px'} alignItems={'center'}>
@@ -87,7 +77,6 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                     <Box>
                         <Link
                             href={`/effects/${effect.slug}`}
-                            onClick={handleClick}
                             style={{
                                 color: 'var(--background)',
                                 fontWeight: '600'
@@ -128,34 +117,7 @@ export default function EffectsGallery() {
 
     const [allViews, setAllViews] = useState<Record<string, number>>({})
 
-    useEffect(() => {
-        const fetchAllViews = async () => {
-            const cached = sessionStorage.getItem('funcReveal_allViews')
-            const cachedTime = sessionStorage.getItem('funcReveal_allViews_time')
-            const now = Date.now()
-
-            // expiration 5 minute
-            if (cached && cachedTime && now - parseInt(cachedTime) < 5 * 60 * 1000) {
-                const parsed = JSON.parse(cached)
-                setAllViews(parsed)
-                return
-            }
-
-            try {
-                const slugs = effects.map(e => e.slug).join(',')
-                const res = await fetch(`https://view-counter.funcreveal.workers.dev/?slugs=${slugs}&queryOnly=1`)
-                const data = await res.json()
-
-                setAllViews(data.views || {})
-                sessionStorage.setItem('funcReveal_allViews', JSON.stringify(data.views || {}))
-                sessionStorage.setItem('funcReveal_allViews_time', now.toString())
-            } catch (err) {
-                console.error('Failed to fetch all views', err)
-            }
-        }
-
-        fetchAllViews()
-    }, [])
+    useFetchAllViews({ setAllViews });
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue)
@@ -179,7 +141,7 @@ export default function EffectsGallery() {
         <>
             <Layout>
                 <NextSeo
-                    title="Effects Gallery | funcReveal"
+                    title="Effects | funcReveal"
                     description="A list of interactive CSS + JS effects."
                     canonical="https://funcreveal.github.io/effects-gallery/"
                     languageAlternates={[
