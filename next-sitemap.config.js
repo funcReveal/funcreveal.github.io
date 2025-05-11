@@ -4,7 +4,6 @@ module.exports = {
   generateRobotsTxt: true,
   outDir: "./out",
   exclude: ["/404"],
-  sitemapSize: 1000,
   transform: async (config, path) => {
     let priority = 0.5;
     let changefreq = "monthly";
