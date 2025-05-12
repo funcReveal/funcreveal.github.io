@@ -83,7 +83,7 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                     <Box>
                         <Box display={'flex'} justifyContent={'space-between'}>
                             <Link
-                                href={`/effects/${effect.slug}`}
+                                href={`/zh-CN/effects/${effect.slug}`}
                                 style={{
                                     color: 'var(--background)',
                                     fontWeight: '600'
@@ -173,8 +173,8 @@ export default function EffectsGallery() {
                             onChange={handleChange}
                             aria-label="category tabs"
                         >
-                            <Tab sx={tabStyles} label="NEWEST" {...a11yProps(0)} />
-                            <Tab sx={tabStyles} label="POPULAR" {...a11yProps(1)} />
+                            <Tab sx={tabStyles} label="最新发布" {...a11yProps(0)} />
+                            <Tab sx={tabStyles} label="热门趋势" {...a11yProps(1)} />
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>

@@ -83,7 +83,7 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                     <Box>
                         <Box display={'flex'} justifyContent={'space-between'}>
                             <Link
-                                href={`/effects/${effect.slug}`}
+                                href={`/zh-TW/effects/${effect.slug}`}
                                 style={{
                                     color: 'var(--background)',
                                     fontWeight: '600'
@@ -154,11 +154,11 @@ export default function EffectsGallery() {
         <>
             <Layout>
                 <NextSeo
-                    title="Effects | funcReveal"
-                    description="A list of interactive CSS + JS effects."
-                    canonical="https://funcreveal.github.io/effects-gallery/"
+                    title="特效總覽 | funcReveal"
+                    description="各種 CSS + JS 特效的集合。"
+                    canonical="https://funcreveal.github.io/zh-TW/effects-gallery/"
                     languageAlternates={[
-                        { hrefLang: 'zh-TW', href: 'https://funcreveal.github.io/zh-TW/effects-gallery/' },
+                        { hrefLang: 'en', href: 'https://funcreveal.github.io/effects-gallery/' },
                         { hrefLang: 'zh-CN', href: 'https://funcreveal.github.io/zh-CN/effects-gallery/' },
                     ]}
                 />
@@ -173,8 +173,8 @@ export default function EffectsGallery() {
                             onChange={handleChange}
                             aria-label="category tabs"
                         >
-                            <Tab sx={tabStyles} label="NEWEST" {...a11yProps(0)} />
-                            <Tab sx={tabStyles} label="POPULAR" {...a11yProps(1)} />
+                            <Tab sx={tabStyles} label="最新發布" {...a11yProps(0)} />
+                            <Tab sx={tabStyles} label="熱門趨勢" {...a11yProps(1)} />
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
