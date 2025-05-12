@@ -45,7 +45,7 @@ function CustomTabPanel(props: TabPanelProps) {
             aria-labelledby={`simple-tab-${index}`}
             {...other}
         >
-            {value === index && <Box sx={{ p: 3, backgroundColor: 'burlywood' }}>{children}</Box>}
+            {value === index && <Box sx={{ p: 3, backgroundColor: 'var(--background-80)' }}>{children}</Box>}
         </div>
     );
 }
@@ -59,7 +59,11 @@ function a11yProps(index: number) {
 
 function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
     return (
-        <Card sx={{ p: 2, mb: '15px', borderRadius: 2, boxShadow: 8 }}>
+        <Card
+            sx={{
+                bgcolor: 'var(--foreground)', p: 2, mb: '15px', borderRadius: 2, boxShadow: '0px 0px 5px 1px rgba(233, 76, 76, 0.6) inset,0px 0px 5px 3px rgba(206, 66, 194, 0.6)'
+            }}
+        >
             <Box display={'flex'} flexDirection={'row'} gap={'10px'} alignItems={'center'}>
                 <Box width={'100px'} height={'100px'} flexShrink={0}>
                     <video
@@ -75,15 +79,22 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                 </Box>
                 <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} minHeight={'100px'}>
                     <Box>
-                        <Link
-                            href={`/effects/${effect.slug}`}
-                            style={{
-                                color: 'var(--background)',
-                                fontWeight: '600'
-                            }}
-                        >
-                            {effect.titles && effect.titles['en'] ? effect.titles['en'] : ''}
-                        </Link>
+                        <Box display={'flex'} justifyContent={'space-between'}>
+                            <Link
+                                href={`/effects/${effect.slug}`}
+                                style={{
+                                    color: 'var(--background)',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                {effect.titles && effect.titles['en'] ? effect.titles['en'] : ''}
+                            </Link>
+                            <Typography color='gray' fontSize={'15px'} sx={{ transform: 'translateY(-5px) translateX(3px)' }}>
+                                {effect.createdTime?.year}-
+                                {effect.createdTime?.month}-
+                                {effect.createdTime?.day}
+                            </Typography>
+                        </Box>
                         <Typography
                             color={'#6e6e6e'}
                             title={effect.descriptions && effect.descriptions['en'] ? effect.descriptions['en'] : ''}
@@ -150,7 +161,7 @@ export default function EffectsGallery() {
                     ]}
                 />
                 <Box sx={{ backgroundColor: 'gray' }}>
-                    <Box sx={{ borderBottom: 1 }}>
+                    <Box>
                         <Tabs
                             slotProps={{
                                 indicator: { sx: { backgroundColor: 'red' } }
@@ -174,9 +185,12 @@ export default function EffectsGallery() {
                             }}
                             columnGap={'15px'}
                         >
-                            {effects.map((effect) => (
-                                <EffectCard key={effect.slug} effect={effect} views={allViews[effect.slug] ?? 0} />
-                            ))}
+                            {[...effects]
+                                .sort((a, b) => b.createdTime.time - a.createdTime.time)
+                                .map((effect) => (
+                                    <EffectCard key={effect.slug} effect={effect} views={allViews[effect.slug] ?? 0} />
+                                ))
+                            }
                         </Box>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
@@ -189,9 +203,12 @@ export default function EffectsGallery() {
                             }}
                             columnGap={'15px'}
                         >
-                            {effects.map((effect) => (
-                                <EffectCard key={effect.slug} effect={effect} views={allViews[effect.slug] ?? 0} />
-                            ))}
+                            {[...effects]
+                                .sort((a, b) => (allViews[b.slug] ?? 0) - (allViews[a.slug] ?? 0))
+                                .map((effect) => (
+                                    <EffectCard key={effect.slug} effect={effect} views={allViews[effect.slug] ?? 0} />
+                                ))
+                            }
                         </Box>
                     </CustomTabPanel>
                 </Box>

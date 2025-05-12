@@ -7,8 +7,10 @@
   :root {
     --background: rgb(10, 10, 10);
     --background-20: rgb(10, 10, 10, 0.2);
+    --background-80: rgb(10, 10, 10, 0.8);
     --foreground: rgb(237, 237, 237);
     --foreground-20: rgb(237, 237, 237, 0.2);
+    --foreground-80: rgb(237, 237, 237, 0.8);
   }
 }
 

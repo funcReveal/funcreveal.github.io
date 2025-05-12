@@ -1,10 +1,13 @@
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { effects } from '@/lib/effects'
 import { NextSeo } from 'next-seo'
-import Layout from '@/components/Layout'
+
 import { Box, Card, Tab, Tabs, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
 import { GitHub } from '@mui/icons-material'
+
+import { effects } from '@/lib/effects'
+import Layout from '@/components/Layout'
+import { useFetchAllViews } from '@/shared/viewCounter'
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -44,7 +47,7 @@ function CustomTabPanel(props: TabPanelProps) {
             aria-labelledby={`simple-tab-${index}`}
             {...other}
         >
-            {value === index && <Box sx={{ p: 3, backgroundColor: 'burlywood' }}>{children}</Box>}
+            {value === index && <Box sx={{ p: 3, backgroundColor: 'var(--background-80)' }}>{children}</Box>}
         </div>
     );
 }
@@ -57,19 +60,12 @@ function a11yProps(index: number) {
 }
 
 function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
-
-    const handleClick = async () => {
-        try {
-            const url = `https://view-counter.funcreveal.workers.dev/?slug=${effect.slug}`
-
-            navigator.sendBeacon(url)
-        } catch (err) {
-            console.error('Failed to increment view', err)
-        }
-    }
-
     return (
-        <Card sx={{ p: 2, mb: '15px', borderRadius: 2, boxShadow: 8 }}>
+        <Card
+            sx={{
+                bgcolor: 'var(--foreground)', p: 2, mb: '15px', borderRadius: 2, boxShadow: '0px 0px 5px 1px rgba(233, 76, 76, 0.6) inset,0px 0px 5px 3px rgba(206, 66, 194, 0.6)'
+            }}
+        >
             <Box display={'flex'} flexDirection={'row'} gap={'10px'} alignItems={'center'}>
                 <Box width={'100px'} height={'100px'} flexShrink={0}>
                     <video
@@ -85,25 +81,31 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                 </Box>
                 <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} minHeight={'100px'}>
                     <Box>
-                        <Link
-                            href={`/zh-TW/effects/${effect.slug}`}
-                            onClick={handleClick}
-                            style={{
-                                color: 'var(--background)',
-                                fontWeight: '600'
-                            }}
-                        >
-                            {effect.titles && effect.titles['zh-TW'] ? effect.titles['zh-TW'] : ''}
-                        </Link>
+                        <Box display={'flex'} justifyContent={'space-between'}>
+                            <Link
+                                href={`/effects/${effect.slug}`}
+                                style={{
+                                    color: 'var(--background)',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                {effect.titles && effect.titles['zh-TW'] ? effect.titles['zh-TW'] : ''}
+                            </Link>
+                            <Typography color='gray' fontSize={'15px'} sx={{ transform: 'translateY(-5px) translateX(3px)' }}>
+                                {effect.createdTime?.year}-
+                                {effect.createdTime?.month}-
+                                {effect.createdTime?.day}
+                            </Typography>
+                        </Box>
                         <Typography
-                            color={'gray'}
+                            color={'#6e6e6e'}
                             title={effect.descriptions && effect.descriptions['zh-TW'] ? effect.descriptions['zh-TW'] : ''}
                             display={'-webkit-box'}
                             overflow={'hidden'}
                             textOverflow={'ellipsis'}
                             sx={{
                                 WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical'
+                                WebkitBoxOrient: 'vertical',
                             }}
                         >
                             {effect.descriptions && effect.descriptions['zh-TW'] ? effect.descriptions['zh-TW'] : ''}
@@ -128,34 +130,7 @@ export default function EffectsGallery() {
 
     const [allViews, setAllViews] = useState<Record<string, number>>({})
 
-    useEffect(() => {
-        const fetchAllViews = async () => {
-            const cached = sessionStorage.getItem('funcReveal_allViews')
-            const cachedTime = sessionStorage.getItem('funcReveal_allViews_time')
-            const now = Date.now()
-
-            // expiration 5 minute
-            if (cached && cachedTime && now - parseInt(cachedTime) < 5 * 60 * 1000) {
-                const parsed = JSON.parse(cached)
-                setAllViews(parsed)
-                return
-            }
-
-            try {
-                const slugs = effects.map(e => e.slug).join(',')
-                const res = await fetch(`https://view-counter.funcreveal.workers.dev/?slugs=${slugs}&queryOnly=1`)
-                const data = await res.json()
-
-                setAllViews(data.views || {})
-                sessionStorage.setItem('funcReveal_allViews', JSON.stringify(data.views || {}))
-                sessionStorage.setItem('funcReveal_allViews_time', now.toString())
-            } catch (err) {
-                console.error('Failed to fetch all views', err)
-            }
-        }
-
-        fetchAllViews()
-    }, [])
+    useFetchAllViews({ setAllViews });
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue)
@@ -179,16 +154,16 @@ export default function EffectsGallery() {
         <>
             <Layout>
                 <NextSeo
-                    title="特效總覽 | funcReveal"
-                    description="各種 CSS + JS 特效的集合。"
-                    canonical="https://funcreveal.github.io/zh-TW/effects-gallery/"
+                    title="Effects | funcReveal"
+                    description="A list of interactive CSS + JS effects."
+                    canonical="https://funcreveal.github.io/effects-gallery/"
                     languageAlternates={[
-                        { hrefLang: 'en', href: 'https://funcreveal.github.io/' },
-                        { hrefLang: 'zh-CN', href: 'https://funcreveal.github.io/zh-CN/' },
+                        { hrefLang: 'zh-TW', href: 'https://funcreveal.github.io/zh-TW/effects-gallery/' },
+                        { hrefLang: 'zh-CN', href: 'https://funcreveal.github.io/zh-CN/effects-gallery/' },
                     ]}
                 />
                 <Box sx={{ backgroundColor: 'gray' }}>
-                    <Box sx={{ borderBottom: 1 }}>
+                    <Box>
                         <Tabs
                             slotProps={{
                                 indicator: { sx: { backgroundColor: 'red' } }
@@ -196,10 +171,10 @@ export default function EffectsGallery() {
                             sx={tabsStyles}
                             value={value}
                             onChange={handleChange}
-                            aria-label="分類頁籤"
+                            aria-label="category tabs"
                         >
-                            <Tab sx={tabStyles} label="最新" {...a11yProps(0)} />
-                            <Tab sx={tabStyles} label="最熱門" {...a11yProps(1)} />
+                            <Tab sx={tabStyles} label="NEWEST" {...a11yProps(0)} />
+                            <Tab sx={tabStyles} label="POPULAR" {...a11yProps(1)} />
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
@@ -212,20 +187,30 @@ export default function EffectsGallery() {
                             }}
                             columnGap={'15px'}
                         >
-                            {effects.map((effect) => (
-                                <EffectCard key={effect.slug} effect={effect} views={allViews[effect.slug] ?? 0} />
-                            ))}
+                            {[...effects]
+                                .sort((a, b) => b.createdTime.time - a.createdTime.time)
+                                .map((effect) => (
+                                    <EffectCard key={effect.slug} effect={effect} views={allViews[effect.slug] ?? 0} />
+                                ))
+                            }
                         </Box>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Box >
-                            {effects.map((effect) => (
-                                <Card key={effect.slug} sx={{ p: 4, mb: 2 }}>
-                                    <Link href={`/zh-TW/effects/${effect.slug}`}>
-                                        {effect.titles['zh-TW']}
-                                    </Link>
-                                </Card>
-                            ))}
+                        <Box
+                            display={'grid'}
+                            gridTemplateColumns={{
+                                xs: '1fr',
+                                md: '1fr 1fr',
+                                xl: '1fr 1fr 1fr'
+                            }}
+                            columnGap={'15px'}
+                        >
+                            {[...effects]
+                                .sort((a, b) => (allViews[b.slug] ?? 0) - (allViews[a.slug] ?? 0))
+                                .map((effect) => (
+                                    <EffectCard key={effect.slug} effect={effect} views={allViews[effect.slug] ?? 0} />
+                                ))
+                            }
                         </Box>
                     </CustomTabPanel>
                 </Box>
