@@ -23,6 +23,7 @@ const presets = {
     carnation: { count: 30, rotate: true, drift: true, tiltWithDrift: false, speedRange: [0.2, 1], sizeRange: [40, 80], opacity: 1, rotateSwingRange: 15, rotateSpeed: 0.010, driftAmount: 0.1 },
     snow: { count: 50, rotate: false, drift: true, tiltWithDrift: false, speedRange: [0.4, 0.6], sizeRange: [8, 16], opacity: 0.2, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.5 },
     snowflake: { count: 50, rotate: false, drift: true, tiltWithDrift: false, speedRange: [0.4, 0.6], sizeRange: [15, 30], opacity: 0.2, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.4 },
+    all: { count: 100, rotate: true, drift: true, tiltWithDrift: false, speedRange: [0.1, 1], sizeRange: [50, 100], opacity: 0.52, rotateSwingRange: 15, rotateSpeed: 0.015, driftAmount: 0.2 },
 };
 
 const backgroundPresets: Record<string, string> = {
@@ -33,12 +34,13 @@ const backgroundPresets: Record<string, string> = {
     carnation: 'linear-gradient(135deg, #ffd6d6, #ff9a9e)',       // 淡粉紅至亮桃紅
     snow: 'linear-gradient(135deg, #4b6cb7, #182848)',           // 冷色深藍背景，雪花會變明顯
     snowflake: 'linear-gradient(135deg, #3e5151, #decba4)',      // 淺金搭配暗灰，讓雪更立體
+    all: '',
 };
 
 type PresetType = keyof typeof presets;
 
 const ShowFallingParticles: React.FC = () => {
-    const [type, setType] = useState<'rain' | 'heart' | 'maple' | 'bubble' | 'carnation' | 'snow' | 'snowflake' | 'heart'>('carnation');
+    const [type, setType] = useState<'rain' | 'heart' | 'maple' | 'bubble' | 'carnation' | 'snow' | 'snowflake' | 'heart' | 'all'>('carnation');
     const [count, setCount] = useState(20);
     const [rotate, setRotate] = useState(true);
     const [drift, setDrift] = useState(true);
@@ -53,6 +55,8 @@ const ShowFallingParticles: React.FC = () => {
     const [background, setBackground] = useState(backgroundPresets['carnation']);
     const [isCustomBackground, setIsCustomBackground] = useState(false);
     const [isCustomText, setIsCustomText] = useState(false); // 追蹤是否手動輸入過
+
+    const [isReady, setIsReady] = useState(false);
 
     // 使用者編輯文字時要設為 true
     const handleTextOverlayChange = (value: string) => {
@@ -88,6 +92,7 @@ const ShowFallingParticles: React.FC = () => {
         if (!isCustomBackground && backgroundPresets[type]) {
             setBackground(backgroundPresets[type]);
         }
+        setIsReady(true);
     }, [type, isCustomBackground, resetToPreset]);
 
     return (
@@ -104,24 +109,26 @@ const ShowFallingParticles: React.FC = () => {
                 width={{ xs: '80vw', sm: '50vw' }}
                 height={{ xs: '33dvh', sm: '66vh' }}
             >
-                <FallingParticles
-                    count={count}
-                    rotate={rotate}
-                    drift={drift}
-                    types={[type]}
-                    opacity={opacity}
-                    driftAmount={driftAmount}
-                    rotateSwingRange={rotateSwingRange}
-                    rotateSpeed={rotateSpeed}
-                    sizeRange={sizeRange}
-                    speedRange={speedRange}
-                    tiltWithDrift={tiltWithDrift}
-                    textOverlay={textOverlay}
-                    background={background}
-                />
+                {isReady && (
+                    <FallingParticles
+                        count={count}
+                        rotate={rotate}
+                        drift={drift}
+                        type={type}
+                        opacity={opacity}
+                        driftAmount={driftAmount}
+                        rotateSwingRange={rotateSwingRange}
+                        rotateSpeed={rotateSpeed}
+                        sizeRange={sizeRange}
+                        speedRange={speedRange}
+                        tiltWithDrift={tiltWithDrift}
+                        textOverlay={textOverlay}
+                        background={background}
+                    />
+                )}
             </Box>
 
-            <Paper elevation={3} sx={{ p: 3, width: 320, bgcolor: '#6e6e6e22', color: 'var(--foreground)' }}>
+            <Paper elevation={3} sx={{ p: 3, width: 320, bgcolor: '#6e6e6e22', color: 'var(--foreground)' }} >
                 <Grid container spacing={2} direction="column">
                     <Grid >
                         <FormControl fullWidth>
@@ -131,7 +138,6 @@ const ShowFallingParticles: React.FC = () => {
                                 setType(newType);
                                 resetToPreset(newType);
                             }}
-
                             >
                                 <MenuItem value="carnation">carnation</MenuItem>
                                 <MenuItem value="rain">rain</MenuItem>
@@ -140,6 +146,7 @@ const ShowFallingParticles: React.FC = () => {
                                 <MenuItem value="snow">snow</MenuItem>
                                 <MenuItem value="snowflake">snowflake</MenuItem>
                                 <MenuItem value="heart">heart</MenuItem>
+                                <MenuItem value="all">all</MenuItem>
                             </Select>
                         </FormControl>
                         <FormControl fullWidth>
@@ -161,6 +168,7 @@ const ShowFallingParticles: React.FC = () => {
                                 <MenuItem value="snow">snow</MenuItem>
                                 <MenuItem value="snowflake">snowflake</MenuItem>
                                 <MenuItem value="heart">heart</MenuItem>
+                                <MenuItem value="all">all</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
