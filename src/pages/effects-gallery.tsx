@@ -2,10 +2,12 @@ import Link from 'next/link'
 import { effects } from '@/lib/effects'
 import { NextSeo } from 'next-seo'
 import Layout from '@/components/Layout'
-import { Box, Card, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Card, Skeleton, Tab, Tabs, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { GitHub } from '@mui/icons-material'
 import { useFetchAllViews } from '@/shared/viewCounter'
+
+import styles from '@/styles/effects-gallery.module.css'
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -60,14 +62,22 @@ function a11yProps(index: number) {
 function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
     return (
         <Card
+            className={styles.animatedBorder}
             sx={{
-                bgcolor: 'var(--foreground)', p: 2, mb: '15px', borderRadius: 2, boxShadow: '0px 0px 5px 1px rgba(233, 76, 76, 0.6) inset,0px 0px 5px 3px rgba(206, 66, 194, 0.6)'
+                position: 'relative',
+                overflow: 'hidden',
+                zIndex: 0,
+                bgcolor: 'var(--foreground)',
+                p: 2,
+                mb: '15px',
+                borderRadius: '10px',
             }}
         >
             <Box display={'flex'} flexDirection={'row'} gap={'10px'} alignItems={'center'}>
                 <Box width={'100px'} height={'100px'} flexShrink={0}>
                     <video
                         src={`/videos/${effect.slug}.webm`}
+                        poster={`/thumbnails/${effect.slug}.jpg`}
                         preload="none"
                         muted
                         loop
@@ -113,7 +123,7 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                     <Box display={'flex'} justifyContent={'space-between'}>
                         <GitHub />
                         <Typography>
-                            {views ?? '...'} views
+                            {views ? `${views} views` : <Skeleton width={'80px'} animation="wave" />}
                         </Typography>
                     </Box>
                 </Box>

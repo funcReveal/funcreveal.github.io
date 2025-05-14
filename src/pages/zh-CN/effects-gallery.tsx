@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { NextSeo } from 'next-seo'
 
-import { Box, Card, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Card, Skeleton, Tab, Tabs, Typography } from '@mui/material'
 import { GitHub } from '@mui/icons-material'
 
 import { effects } from '@/lib/effects'
 import Layout from '@/components/Layout'
 import { useFetchAllViews } from '@/shared/viewCounter'
+
+import styles from '@/styles/effects-gallery.module.css'
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -62,8 +64,15 @@ function a11yProps(index: number) {
 function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
     return (
         <Card
+            className={styles.animatedBorder}
             sx={{
-                bgcolor: 'var(--foreground)', p: 2, mb: '15px', borderRadius: 2, boxShadow: '0px 0px 5px 1px rgba(233, 76, 76, 0.6) inset,0px 0px 5px 3px rgba(206, 66, 194, 0.6)'
+                position: 'relative',
+                overflow: 'hidden',
+                zIndex: 0,
+                bgcolor: 'var(--foreground)',
+                p: 2,
+                mb: '15px',
+                borderRadius: '10px',
             }}
         >
             <Box display={'flex'} flexDirection={'row'} gap={'10px'} alignItems={'center'}>
@@ -115,7 +124,7 @@ function EffectCard({ effect, views }: { effect: effectProps, views: number }) {
                     <Box display={'flex'} justifyContent={'space-between'}>
                         <GitHub />
                         <Typography>
-                            观看次数：{views ?? '...'}
+                            {views ? `观看次数：${views}` : <Skeleton width={'80px'} animation="wave" />}
                         </Typography>
                     </Box>
                 </Box>
