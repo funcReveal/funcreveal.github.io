@@ -18,8 +18,6 @@ interface FallingParticlesProps {
     sizeRange?: [number, number]; // Particle size range
     type?: 'heart' | 'maple' | 'rain' | 'bubble' | 'snow' | 'snowflake' | 'carnation' | 'all';
     opacity?: number; // Particle transparency (0 to 1)
-    rotate?: boolean; // Whether the particles rotate
-    drift?: boolean; // Whether particles drift left/right
     angleInitial?: number; // Starting rotation angle
     rotateSwingRange?: number; // Maximum angle of swing rotation
     rotateSpeed?: number; // Speed of the swing rotation
@@ -57,18 +55,35 @@ interface Particle {
 }
 
 // Default settings per particle type
-function getDefaultsByType(type: string) {
+const getDefaultsByType = (type: string) => {
     switch (type) {
-        case 'rain': return { count: 50, rotate: false, drift: true, tiltWithDrift: true, speedRange: [4, 5], sizeRange: [10, 20], opacity: 1, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.3 };
-        case 'heart': return { count: 20, rotate: true, drift: true, tiltWithDrift: false, speedRange: [0.1, 1], sizeRange: [50, 100], opacity: 0.52, rotateSwingRange: 15, rotateSpeed: 0.015, driftAmount: 0.2 };
-        case 'maple': return { count: 50, rotate: true, drift: true, tiltWithDrift: false, speedRange: [0.2, 1], sizeRange: [24, 48], opacity: 0.8, rotateSwingRange: 45, rotateSpeed: 0.03, driftAmount: 0.01 };
-        case 'bubble': return { count: 50, rotate: false, drift: true, tiltWithDrift: false, speedRange: [0.3, 0.8], sizeRange: [10, 20], opacity: 0.8, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.5 };
-        case 'carnation': return { count: 30, rotate: true, drift: true, tiltWithDrift: false, speedRange: [0.2, 1], sizeRange: [40, 80], opacity: 1, rotateSwingRange: 15, rotateSpeed: 0.010, driftAmount: 0.1 };
-        case 'snow': return { count: 50, rotate: false, drift: true, tiltWithDrift: false, speedRange: [0.4, 0.6], sizeRange: [8, 16], opacity: 0.2, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.5 };
-        case 'snowflake': return { count: 50, rotate: false, drift: true, tiltWithDrift: false, speedRange: [0.4, 0.6], sizeRange: [15, 30], opacity: 0.2, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.4 };
-        default: return { count: 50, rotate: true, drift: true, tiltWithDrift: false, speedRange: [0.2, 1], sizeRange: [40, 80], opacity: 1, rotateSwingRange: 15, rotateSpeed: 0.010, driftAmount: 0.1 };
+        case 'rain': return { count: 50, tiltWithDrift: true, speedRange: [4, 5], sizeRange: [10, 20], opacity: 1, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.3 };
+        case 'heart': return { count: 20, tiltWithDrift: false, speedRange: [0.1, 1], sizeRange: [50, 100], opacity: 0.52, rotateSwingRange: 15, rotateSpeed: 0.015, driftAmount: 0.2 };
+        case 'maple': return { count: 50, tiltWithDrift: false, speedRange: [0.2, 1], sizeRange: [24, 48], opacity: 0.8, rotateSwingRange: 45, rotateSpeed: 0.03, driftAmount: 0.01 };
+        case 'bubble': return { count: 50, tiltWithDrift: false, speedRange: [0.3, 0.8], sizeRange: [10, 20], opacity: 0.8, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.5 };
+        case 'carnation': return { count: 30, tiltWithDrift: false, speedRange: [0.2, 1], sizeRange: [40, 80], opacity: 1, rotateSwingRange: 15, rotateSpeed: 0.010, driftAmount: 0.1 };
+        case 'snow': return { count: 50, tiltWithDrift: false, speedRange: [0.4, 0.6], sizeRange: [8, 16], opacity: 0.2, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.5 };
+        case 'snowflake': return { count: 50, tiltWithDrift: false, speedRange: [0.4, 0.6], sizeRange: [15, 30], opacity: 0.2, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.4 };
+        default: return { count: 50, tiltWithDrift: false, speedRange: [0.2, 1], sizeRange: [40, 80], opacity: 1, rotateSwingRange: 15, rotateSpeed: 0.010, driftAmount: 0.1 };
     }
 }
+
+// Random number helper
+const randomBetween = (min: number, max: number) => {
+    return min + Math.random() * (max - min);
+}
+
+// Convert degrees to radians
+const degToRad = (deg: number) => {
+    return (deg * Math.PI) / 180;
+}
+
+// Map value from one range to another
+const mapValue = (value: number, inMin: number, inMax: number, outMin: number, outMax: number) => {
+    const ratio = (value - inMin) / (inMax - inMin);
+    return outMin + ratio * (outMax - outMin);
+}
+
 
 const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -86,8 +101,8 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
             speedRange: props.speedRange ?? defaults.speedRange,
             sizeRange: props.sizeRange ?? defaults.sizeRange,
             opacity: props.opacity ?? defaults.opacity,
-            rotate: props.rotate ?? defaults.rotate,
-            drift: props.drift ?? defaults.drift,
+            rotate: props.rotateSpeed ?? defaults.rotateSpeed > 0,
+            drift: props.driftAmount ?? defaults.driftAmount > 0,
             angleInitial: props.angleInitial ?? 0,
             rotateSwingRange: props.rotateSwingRange ?? defaults.rotateSwingRange,
             rotateSpeed: props.rotateSpeed ?? defaults.rotateSpeed,
@@ -141,19 +156,32 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
                 resizeObserver = new ResizeObserver(resizeCanvas);
                 resizeObserver.observe(container);
 
-                // Initialize particle data
                 particlesRef.current = [];
+
+                const maxSize = mergedProps.sizeRange[1];
+                const cols = Math.max(1, Math.floor(canvas.width / maxSize));
+                const rows = Math.max(1, Math.floor(canvas.height / maxSize));
+                const totalSlots = cols * rows;
+
+                const usedSlots = new Set<number>();
+                const driftBase = mergedProps.driftAmount;
+
                 for (let i = 0; i < mergedProps.count; i++) {
                     const img = imgs[Math.floor(Math.random() * imgs.length)];
                     const speed = randomBetween(mergedProps.speedRange[0], mergedProps.speedRange[1]);
+                    const size = randomBetween(mergedProps.sizeRange[0], mergedProps.sizeRange[1]);
+
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+
                     const angleRange = degToRad(mapValue(speed, mergedProps.speedRange[0], mergedProps.speedRange[1], mergedProps.rotateSwingRange, 5));
                     const angleSpeed = mapValue(speed, mergedProps.speedRange[0], mergedProps.speedRange[1], mergedProps.rotateSpeed, 0.005);
 
                     particlesRef.current.push({
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height,
+                        x,
+                        y,
                         speed,
-                        size: randomBetween(mergedProps.sizeRange[0], mergedProps.sizeRange[1]),
+                        size,
                         img,
                         driftX: mergedProps.drift ? randomBetween(-mergedProps.driftAmount, mergedProps.driftAmount) : 0,
                         angle: degToRad(mergedProps.angleInitial),
@@ -245,21 +273,5 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
         </div>
     );
 };
-
-// Random number helper
-function randomBetween(min: number, max: number) {
-    return min + Math.random() * (max - min);
-}
-
-// Convert degrees to radians
-function degToRad(deg: number) {
-    return (deg * Math.PI) / 180;
-}
-
-// Map value from one range to another
-function mapValue(value: number, inMin: number, inMax: number, outMin: number, outMax: number) {
-    const ratio = (value - inMin) / (inMax - inMin);
-    return outMin + ratio * (outMax - outMin);
-}
 
 export default FallingParticles;

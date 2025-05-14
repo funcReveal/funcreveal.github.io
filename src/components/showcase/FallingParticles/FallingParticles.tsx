@@ -36,7 +36,7 @@ const backgroundPresets: Record<string, string> = {
     carnation: 'linear-gradient(135deg, #ffd6d6, #ff9a9e)',
     snow: 'linear-gradient(135deg, #4b6cb7, #182848)',
     snowflake: 'linear-gradient(135deg, #3e5151, #decba4)',
-    all: '',
+    all: 'transparent',
 };
 
 type PresetType = keyof typeof presets;
@@ -46,8 +46,6 @@ const ShowFallingParticles: React.FC = () => {
 
     const [type, setType] = useState<'rain' | 'heart' | 'maple' | 'bubble' | 'carnation' | 'snow' | 'snowflake' | 'heart' | 'all'>('carnation');
     const [count, setCount] = useState(20);
-    const [rotate, setRotate] = useState(true);
-    const [drift, setDrift] = useState(true);
     const [tiltWithDrift, setTiltWithDrift] = useState(false);
     const [opacity, setOpacity] = useState(0.85);
     const [driftAmount, setDriftAmount] = useState(0.2);
@@ -74,8 +72,6 @@ const ShowFallingParticles: React.FC = () => {
         };
 
         setCount(preset.count);
-        setRotate(preset.rotate);
-        setDrift(preset.drift);
         setOpacity(preset.opacity);
         setDriftAmount(preset.driftAmount);
         setRotateSwingRange(preset.rotateSwingRange);
@@ -114,8 +110,6 @@ const ShowFallingParticles: React.FC = () => {
                 {isReady && (
                     <FallingParticles
                         count={count}
-                        rotate={rotate}
-                        drift={drift}
                         type={type}
                         opacity={opacity}
                         driftAmount={driftAmount}
@@ -202,14 +196,12 @@ const ShowFallingParticles: React.FC = () => {
                     <Grid>
 
                         <Grid >
-                            <FormControlLabel control={<Checkbox checked={rotate} onChange={() => setRotate(r => !r)} />} label={t('falling.rotate')} />
-                            <FormControlLabel control={<Checkbox checked={drift} onChange={() => setDrift(d => !d)} />} label={t('falling.drift')} />
                             <FormControlLabel control={<Checkbox checked={tiltWithDrift} onChange={() => setTiltWithDrift(t => !t)} />} label={t('falling.tiltWithDrift')} />
                         </Grid>
 
                         <Grid >
                             <Typography gutterBottom>{t('falling.count')} {count}</Typography>
-                            <Slider min={7} max={100} value={count} onChange={(_, val) => setCount(val as number)} />
+                            <Slider min={1} max={500} value={count} onChange={(_, val) => setCount(val as number)} />
                         </Grid>
 
                         <Grid >
@@ -230,7 +222,7 @@ const ShowFallingParticles: React.FC = () => {
 
                         <Grid >
                             <Typography gutterBottom>{t('falling.rotateSpeed')} {rotateSpeed.toFixed(3)}</Typography>
-                            <Slider min={0.001} max={0.1} step={0.001} value={rotateSpeed} onChange={(_, val) => setRotateSpeed(val as number)}
+                            <Slider min={0.001} max={1} step={0.001} value={rotateSpeed} onChange={(_, val) => setRotateSpeed(val as number)}
                             />
                         </Grid>
 
@@ -241,7 +233,7 @@ const ShowFallingParticles: React.FC = () => {
                                 onChange={(_, val) => setSizeRange(val as [number, number])}
                                 valueLabelDisplay="auto"
                                 min={5}
-                                max={100}
+                                max={500}
                             />
                         </Grid>
 
@@ -252,7 +244,7 @@ const ShowFallingParticles: React.FC = () => {
                                 onChange={(_, val) => setSpeedRange(val as [number, number])}
                                 valueLabelDisplay="auto"
                                 min={0.1}
-                                max={5}
+                                max={10}
                                 step={0.1}
                             />
                         </Grid>
