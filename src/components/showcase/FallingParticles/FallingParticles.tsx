@@ -15,6 +15,8 @@ import {
     TextField,
 } from '@mui/material';
 
+import { useI18n } from '@/shared/hooks/useI18n'
+
 const presets = {
     rain: { count: 50, rotate: false, drift: true, tiltWithDrift: true, speedRange: [4, 5], sizeRange: [10, 20], opacity: 1, rotateSwingRange: 0, rotateSpeed: 0, driftAmount: 0.3 },
     heart: { count: 20, rotate: true, drift: true, tiltWithDrift: false, speedRange: [0.1, 1], sizeRange: [50, 100], opacity: 0.52, rotateSwingRange: 15, rotateSpeed: 0.015, driftAmount: 0.2 },
@@ -27,19 +29,21 @@ const presets = {
 };
 
 const backgroundPresets: Record<string, string> = {
-    rain: 'linear-gradient(135deg, #2c3e50, #4ca1af)',          // 深藍到青藍，讓雨滴顯眼
-    heart: 'linear-gradient(135deg, #fceabb, #f8b500)',          // 柔和金橘，襯托粉紅心形
-    maple: 'linear-gradient(135deg, #7f5539, #f4a261)',          // 楓葉色調（深棕到亮橘）
-    bubble: 'linear-gradient(135deg, #2e3c50, #b2d0f7)',         // 深藍灰到藍白泡泡對比
-    carnation: 'linear-gradient(135deg, #ffd6d6, #ff9a9e)',       // 淡粉紅至亮桃紅
-    snow: 'linear-gradient(135deg, #4b6cb7, #182848)',           // 冷色深藍背景，雪花會變明顯
-    snowflake: 'linear-gradient(135deg, #3e5151, #decba4)',      // 淺金搭配暗灰，讓雪更立體
+    rain: 'linear-gradient(135deg, #2c3e50, #4ca1af)',
+    heart: 'linear-gradient(135deg, #fceabb, #f8b500)',
+    maple: 'linear-gradient(135deg, #7f5539, #f4a261)',
+    bubble: 'linear-gradient(135deg, #2e3c50, #b2d0f7)',
+    carnation: 'linear-gradient(135deg, #ffd6d6, #ff9a9e)',
+    snow: 'linear-gradient(135deg, #4b6cb7, #182848)',
+    snowflake: 'linear-gradient(135deg, #3e5151, #decba4)',
     all: '',
 };
 
 type PresetType = keyof typeof presets;
 
 const ShowFallingParticles: React.FC = () => {
+    const { t } = useI18n();
+
     const [type, setType] = useState<'rain' | 'heart' | 'maple' | 'bubble' | 'carnation' | 'snow' | 'snowflake' | 'heart' | 'all'>('carnation');
     const [count, setCount] = useState(20);
     const [rotate, setRotate] = useState(true);
@@ -54,11 +58,10 @@ const ShowFallingParticles: React.FC = () => {
     const [textOverlay, setTextOverlay] = useState(`🌷 Happy Mother's Day! 🌷`);
     const [background, setBackground] = useState(backgroundPresets['carnation']);
     const [isCustomBackground, setIsCustomBackground] = useState(false);
-    const [isCustomText, setIsCustomText] = useState(false); // 追蹤是否手動輸入過
+    const [isCustomText, setIsCustomText] = useState(false);
 
     const [isReady, setIsReady] = useState(false);
 
-    // 使用者編輯文字時要設為 true
     const handleTextOverlayChange = (value: string) => {
         setIsCustomText(true);
         setTextOverlay(value);
@@ -98,16 +101,15 @@ const ShowFallingParticles: React.FC = () => {
     return (
         <Box
             display="flex"
-            flexDirection={{ xs: 'column', sm: 'row' }}
+            flexDirection={{ xs: 'column', md: 'row' }}
             justifyContent="center"
             alignItems="center"
             gap={4}
             sx={{ overflow: 'auto' }}
         >
-
             <Box
-                width={{ xs: '80vw', sm: '50vw' }}
-                height={{ xs: '33dvh', sm: '66vh' }}
+                width={{ xs: '80vw', md: '50vw' }}
+                height={{ xs: '33dvh', md: '66vh' }}
             >
                 {isReady && (
                     <FallingParticles
@@ -128,118 +130,132 @@ const ShowFallingParticles: React.FC = () => {
                 )}
             </Box>
 
-            <Paper elevation={3} sx={{ p: 3, width: 320, bgcolor: '#6e6e6e22', color: 'var(--foreground)' }} >
+            <Paper elevation={3} sx={{ flexGrow: 1, p: 3, bgcolor: '#6e6e6e22', color: 'var(--foreground)' }} >
                 <Grid container spacing={2} direction="column">
-                    <Grid >
+                    <Grid container spacing={2}>
                         <FormControl fullWidth>
-                            <InputLabel sx={{ color: 'var(--foreground)' }}>Type</InputLabel>
-                            <Select sx={{ color: 'var(--foreground)', bgcolor: 'var(--foreground-20)' }} value={type} label="Type" onChange={(e) => {
-                                const newType = e.target.value as PresetType;
-                                setType(newType);
-                                resetToPreset(newType);
-                            }}
+                            <InputLabel sx={{ color: 'var(--foreground)' }}>{t('falling.type')}</InputLabel>
+                            <Select
+                                sx={{ color: 'var(--foreground)', bgcolor: 'var(--foreground-20)' }}
+                                value={type}
+                                label="Type"
+                                onChange={(e) => {
+                                    const newType = e.target.value as PresetType;
+                                    setType(newType);
+                                    resetToPreset(newType);
+                                }}
+                                MenuProps={{
+                                    disableScrollLock: true,
+                                }}
                             >
-                                <MenuItem value="carnation">carnation</MenuItem>
-                                <MenuItem value="rain">rain</MenuItem>
-                                <MenuItem value="maple">maple</MenuItem>
-                                <MenuItem value="bubble">bubble</MenuItem>
-                                <MenuItem value="snow">snow</MenuItem>
-                                <MenuItem value="snowflake">snowflake</MenuItem>
-                                <MenuItem value="heart">heart</MenuItem>
-                                <MenuItem value="all">all</MenuItem>
+                                <MenuItem value="carnation">{t('falling.carnation')}</MenuItem>
+                                <MenuItem value="rain">{t('falling.rain')}</MenuItem>
+                                <MenuItem value="maple">{t('falling.maple')}</MenuItem>
+                                <MenuItem value="bubble">{t('falling.bubble')}</MenuItem>
+                                <MenuItem value="snow">{t('falling.snow')}</MenuItem>
+                                <MenuItem value="snowflake">{t('falling.snowflake')}</MenuItem>
+                                <MenuItem value="heart">{t('falling.heart')}</MenuItem>
+                                <MenuItem value="all">{t('falling.all')}</MenuItem>
                             </Select>
                         </FormControl>
                         <FormControl fullWidth>
-                            <InputLabel sx={{ mt: 3, color: 'var(--foreground)' }}>Background</InputLabel>
+                            <InputLabel sx={{ color: 'var(--foreground)' }}>{t('falling.background')}</InputLabel>
                             <Select
                                 value={Object.keys(backgroundPresets).find(key => backgroundPresets[key] === background) || ''}
-                                sx={{ mt: 3, color: 'var(--foreground)', bgcolor: 'var(--foreground-20)' }}
+                                sx={{ color: 'var(--foreground)', bgcolor: 'var(--foreground-20)' }}
                                 label="Background"
                                 onChange={(e) => {
                                     const key = e.target.value;
                                     setBackground(backgroundPresets[key]);
-                                    setIsCustomBackground(true); // ✅ 標記為自訂
+                                    setIsCustomBackground(true);
+                                }}
+                                MenuProps={{
+                                    disableScrollLock: true,
                                 }}
                             >
-                                <MenuItem value="carnation">carnation</MenuItem>
-                                <MenuItem value="rain">rain</MenuItem>
-                                <MenuItem value="maple">maple</MenuItem>
-                                <MenuItem value="bubble">bubble</MenuItem>
-                                <MenuItem value="snow">snow</MenuItem>
-                                <MenuItem value="snowflake">snowflake</MenuItem>
-                                <MenuItem value="heart">heart</MenuItem>
-                                <MenuItem value="all">all</MenuItem>
+                                <MenuItem value="carnation">{t('falling.carnation')}</MenuItem>
+                                <MenuItem value="rain">{t('falling.rain')}</MenuItem>
+                                <MenuItem value="maple">{t('falling.maple')}</MenuItem>
+                                <MenuItem value="bubble">{t('falling.bubble')}</MenuItem>
+                                <MenuItem value="snow">{t('falling.snow')}</MenuItem>
+                                <MenuItem value="snowflake">{t('falling.snowflake')}</MenuItem>
+                                <MenuItem value="heart">{t('falling.heart')}</MenuItem>
+                                <MenuItem value="all">{t('falling.all')}</MenuItem>
                             </Select>
+                        </FormControl>
+                        <FormControl fullWidth>
+                            <TextField
+                                slotProps={{ inputLabel: { shrink: true } }}
+                                label={t('falling.overlayText')}
+                                sx={{
+                                    color: 'var(--foreground)',
+                                    bgcolor: 'var(--foreground-20)',
+                                    input: { color: 'var(--foreground)' },
+                                    label: { color: 'var(--foreground)' }
+                                }}
+                                variant="outlined"
+                                value={textOverlay}
+                                onChange={(e) => handleTextOverlayChange(e.target.value)}
+                            />
                         </FormControl>
                     </Grid>
                     <Grid>
-                        <InputLabel sx={{ color: 'var(--foreground)' }}>Overlay Text</InputLabel>
-                        <TextField
-                            sx={{
-                                bgcolor: 'var(--foreground-20)',
-                                input: { color: 'var(--foreground)' },
-                            }}
-                            fullWidth
-                            variant="outlined"
-                            value={textOverlay}
-                            onChange={(e) => handleTextOverlayChange(e.target.value)}
-                        />
-                    </Grid>
 
-                    <Grid >
-                        <Typography gutterBottom>Count: {count}</Typography>
-                        <Slider min={7} max={100} value={count} onChange={(_, val) => setCount(val as number)} />
-                    </Grid>
+                        <Grid >
+                            <FormControlLabel control={<Checkbox checked={rotate} onChange={() => setRotate(r => !r)} />} label={t('falling.rotate')} />
+                            <FormControlLabel control={<Checkbox checked={drift} onChange={() => setDrift(d => !d)} />} label={t('falling.drift')} />
+                            <FormControlLabel control={<Checkbox checked={tiltWithDrift} onChange={() => setTiltWithDrift(t => !t)} />} label={t('falling.tiltWithDrift')} />
+                        </Grid>
 
-                    <Grid >
-                        <Typography gutterBottom>Opacity: {opacity.toFixed(2)}</Typography>
-                        <Slider min={0} max={1} step={0.01} value={opacity} onChange={(_, val) => setOpacity(val as number)} />
-                    </Grid>
+                        <Grid >
+                            <Typography gutterBottom>{t('falling.count')} {count}</Typography>
+                            <Slider min={7} max={100} value={count} onChange={(_, val) => setCount(val as number)} />
+                        </Grid>
 
-                    <Grid >
-                        <Typography gutterBottom>Drift Amount: {driftAmount.toFixed(2)}</Typography>
-                        <Slider min={0} max={2} step={0.05} value={driftAmount} onChange={(_, val) => setDriftAmount(val as number)} />
-                    </Grid>
+                        <Grid >
+                            <Typography gutterBottom>{t('falling.opacity')} {opacity.toFixed(2)}</Typography>
+                            <Slider min={0} max={1} step={0.01} value={opacity} onChange={(_, val) => setOpacity(val as number)} />
+                        </Grid>
 
-                    <Grid >
-                        <Typography gutterBottom>Rotate Swing (±°): {rotateSwingRange}</Typography>
-                        <Slider min={0} max={90} value={rotateSwingRange} onChange={(_, val) => setRotateSwingRange(val as number)}
-                        />
-                    </Grid>
+                        <Grid >
+                            <Typography gutterBottom>{t('falling.driftAmount')} {driftAmount.toFixed(2)}</Typography>
+                            <Slider min={0} max={2} step={0.05} value={driftAmount} onChange={(_, val) => setDriftAmount(val as number)} />
+                        </Grid>
 
-                    <Grid >
-                        <Typography gutterBottom>Rotate Speed: {rotateSpeed.toFixed(3)}</Typography>
-                        <Slider min={0.001} max={0.1} step={0.001} value={rotateSpeed} onChange={(_, val) => setRotateSpeed(val as number)}
-                        />
-                    </Grid>
+                        <Grid >
+                            <Typography gutterBottom>{t('falling.rotateSwing')} {rotateSwingRange}</Typography>
+                            <Slider min={0} max={90} value={rotateSwingRange} onChange={(_, val) => setRotateSwingRange(val as number)}
+                            />
+                        </Grid>
 
-                    <Grid >
-                        <Typography gutterBottom>Size Range: {sizeRange[0]} - {sizeRange[1]}</Typography>
-                        <Slider
-                            value={sizeRange}
-                            onChange={(_, val) => setSizeRange(val as [number, number])}
-                            valueLabelDisplay="auto"
-                            min={5}
-                            max={100}
-                        />
-                    </Grid>
+                        <Grid >
+                            <Typography gutterBottom>{t('falling.rotateSpeed')} {rotateSpeed.toFixed(3)}</Typography>
+                            <Slider min={0.001} max={0.1} step={0.001} value={rotateSpeed} onChange={(_, val) => setRotateSpeed(val as number)}
+                            />
+                        </Grid>
 
-                    <Grid >
-                        <Typography gutterBottom>Speed Range: {speedRange[0]} - {speedRange[1]}</Typography>
-                        <Slider
-                            value={speedRange}
-                            onChange={(_, val) => setSpeedRange(val as [number, number])}
-                            valueLabelDisplay="auto"
-                            min={0.1}
-                            max={5}
-                            step={0.1}
-                        />
-                    </Grid>
+                        <Grid >
+                            <Typography gutterBottom>{t('falling.sizeRange')} {sizeRange[0]} - {sizeRange[1]}</Typography>
+                            <Slider
+                                value={sizeRange}
+                                onChange={(_, val) => setSizeRange(val as [number, number])}
+                                valueLabelDisplay="auto"
+                                min={5}
+                                max={100}
+                            />
+                        </Grid>
 
-                    <Grid >
-                        <FormControlLabel control={<Checkbox checked={rotate} onChange={() => setRotate(r => !r)} />} label="Rotate" />
-                        <FormControlLabel control={<Checkbox checked={drift} onChange={() => setDrift(d => !d)} />} label="Drift" />
-                        <FormControlLabel control={<Checkbox checked={tiltWithDrift} onChange={() => setTiltWithDrift(t => !t)} />} label="TiltWithDrift" />
+                        <Grid >
+                            <Typography gutterBottom>{t('falling.speedRange')} {speedRange[0]} - {speedRange[1]}</Typography>
+                            <Slider
+                                value={speedRange}
+                                onChange={(_, val) => setSpeedRange(val as [number, number])}
+                                valueLabelDisplay="auto"
+                                min={0.1}
+                                max={5}
+                                step={0.1}
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
             </Paper>

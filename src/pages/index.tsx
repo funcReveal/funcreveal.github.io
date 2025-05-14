@@ -7,7 +7,7 @@ import { EmojiEvents, TrendingUp } from '@mui/icons-material'
 
 import Layout from '@/components/Layout'
 import { effects } from '@/lib/effects'
-import { useFetchAllViews } from '@/shared/viewCounter'
+import { useFetchAllViews } from '@/shared/hooks/viewCounter'
 
 export default function Home() {
   const [allViews, setAllViews] = useState<Record<string, number>>({})

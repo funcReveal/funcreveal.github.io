@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { getEffectComponent } from './EffectRegistry'
 import Layout from './Layout';
 import CodePreview from './common/CodePreview/CodePreview';
-import { useTrackView } from '@/shared/viewCounter';
+import { useTrackView } from '@/shared/hooks/viewCounter';
 
 import { effectsMap } from '@/lib/effects'
 import { effectSources } from '@/lib/effectSources'

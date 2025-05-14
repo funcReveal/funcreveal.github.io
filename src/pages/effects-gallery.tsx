@@ -5,7 +5,7 @@ import Layout from '@/components/Layout'
 import { Box, Card, Skeleton, Tab, Tabs, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { GitHub } from '@mui/icons-material'
-import { useFetchAllViews } from '@/shared/viewCounter'
+import { useFetchAllViews } from '@/shared/hooks/viewCounter'
 
 import styles from '@/styles/effects-gallery.module.css'
 

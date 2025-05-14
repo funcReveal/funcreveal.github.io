@@ -7,7 +7,7 @@ import { GitHub } from '@mui/icons-material'
 
 import { effects } from '@/lib/effects'
 import Layout from '@/components/Layout'
-import { useFetchAllViews } from '@/shared/viewCounter'
+import { useFetchAllViews } from '@/shared/hooks/viewCounter'
 
 import styles from '@/styles/effects-gallery.module.css'
 
