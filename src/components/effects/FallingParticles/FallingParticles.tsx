@@ -158,14 +158,6 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
 
                 particlesRef.current = [];
 
-                const maxSize = mergedProps.sizeRange[1];
-                const cols = Math.max(1, Math.floor(canvas.width / maxSize));
-                const rows = Math.max(1, Math.floor(canvas.height / maxSize));
-                const totalSlots = cols * rows;
-
-                const usedSlots = new Set<number>();
-                const driftBase = mergedProps.driftAmount;
-
                 for (let i = 0; i < mergedProps.count; i++) {
                     const img = imgs[Math.floor(Math.random() * imgs.length)];
                     const speed = randomBetween(mergedProps.speedRange[0], mergedProps.speedRange[1]);
