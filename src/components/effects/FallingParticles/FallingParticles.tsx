@@ -179,8 +179,6 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
         };
         resizeCanvas();
 
-        let frameCount = 0;
-
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -212,7 +210,6 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
                 ctx.restore();
             }
 
-            frameCount++;
             const currentCount = particlesRef.current.length;
             const targetCount = mergedProps.count;
 
