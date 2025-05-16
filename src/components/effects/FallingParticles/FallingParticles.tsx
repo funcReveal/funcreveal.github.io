@@ -85,12 +85,14 @@ const mapValue = (value: number, inMin: number, inMax: number, outMin: number, o
 }
 
 const initCanvas = async (canvas: HTMLCanvasElement, container: HTMLDivElement, type: keyof typeof particleImageMap | 'all', imageStore: React.MutableRefObject<HTMLImageElement[]>) => {
+    // Set canvas size to match container
     const resizeCanvas = () => {
         canvas.width = container.offsetWidth;
         canvas.height = container.offsetHeight;
     };
     resizeCanvas();
 
+    // Load images for the selected particle type(s)
     const resolvedTypes: (keyof typeof particleImageMap)[] =
         type === 'all'
             ? Object.keys(particleImageMap) as (keyof typeof particleImageMap)[]
@@ -110,14 +112,14 @@ const initCanvas = async (canvas: HTMLCanvasElement, container: HTMLDivElement, 
 const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const particlesRef = useRef<Particle[]>([]);
-    const animationRef = useRef<number | null>(null);
-    const imagesRef = useRef<HTMLImageElement[]>([]);
+    const particlesRef = useRef<Particle[]>([]); // Store live particles
+    const animationRef = useRef<number | null>(null); // For canceling animation frame
+    const imagesRef = useRef<HTMLImageElement[]>([]); // Loaded images
 
-    const prevTypeRef = useRef<string>('');
-    const isReadyRef = useRef<boolean>(false);
+    const prevTypeRef = useRef<string>(''); // Track last type to know when to re-init
+    const isReadyRef = useRef<boolean>(false); // Prevent drawing before resources are ready
 
-    // Merge incoming props with default values based on particle type
+    // Merge incoming props with type-specific defaults
     const mergedProps = useMemo(() => {
         const type = props.type ?? 'carnation';
         const defaults = getDefaultsByType(type);
@@ -140,14 +142,14 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
     }, [props]);
 
 
-    // Keep the latest textOverlay value in a ref for consistent rendering
+    // Keep updated text overlay
     const textOverlayRef = useRef(mergedProps.textOverlay);
     useEffect(() => {
         textOverlayRef.current = mergedProps.textOverlay;
     }, [props.textOverlay, mergedProps.textOverlay]);
 
 
-    // Only reinitialize when type changes
+    // Re-init canvas and reset particles if type changed
     useEffect(() => {
         const canvas = canvasRef.current;
         const container = containerRef.current;
@@ -156,7 +158,7 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
         if (prevTypeRef.current !== mergedProps.type) {
             isReadyRef.current = false;
             initCanvas(canvas, container, mergedProps.type, imagesRef).then(() => {
-                particlesRef.current = [];
+                particlesRef.current = []; // Clear all particles on type switch
                 prevTypeRef.current = mergedProps.type;
                 isReadyRef.current = true;
             });
@@ -164,7 +166,8 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
     }, [mergedProps.type]);
 
 
-    // Animation loop that responds to parameters
+
+    // Animation loop: add new particles over time and update existing ones
     useEffect(() => {
         const canvas = canvasRef.current;
         const container = containerRef.current;
@@ -179,18 +182,24 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
         };
         resizeCanvas();
 
+        let frameCount = 0;
+        const spawnInterval = 5; // Every N frames, add a new particle (adjust for appearance speed)
+
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             for (const p of particlesRef.current) {
+                // Movement logic
                 p.y += p.speed;
                 if (mergedProps.drift) p.x += p.driftX;
 
+                // Rotation logic
                 if (mergedProps.rotate) {
                     p.angleTime += p.angleSpeed;
                     p.angle = p.baseAngle + Math.sin(p.angleTime) * p.angleRange;
                 }
 
+                // Draw particle
                 ctx.save();
                 ctx.globalAlpha = mergedProps.opacity;
                 ctx.filter = 'blur(1px)';
@@ -210,10 +219,12 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
                 ctx.restore();
             }
 
+            // Add new particle
+            frameCount++;
             const currentCount = particlesRef.current.length;
             const targetCount = mergedProps.count;
-
-            if (currentCount < targetCount && imagesRef.current.length > 0 && isReadyRef.current) {
+            const canAdd = isReadyRef.current && imagesRef.current.length > 0;
+            if (canAdd && currentCount < targetCount && frameCount % spawnInterval === 0) {
                 const img = imagesRef.current[Math.floor(Math.random() * imagesRef.current.length)];
                 const speed = randomBetween(mergedProps.speedRange[0], mergedProps.speedRange[1]);
                 const size = randomBetween(mergedProps.sizeRange[0], mergedProps.sizeRange[1]);
@@ -222,7 +233,7 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
 
                 particlesRef.current.push({
                     x: Math.random() * canvas.width,
-                    y: -size,
+                    y: -size - Math.random() * 100, // Random vertical offset above top edge
                     speed,
                     size,
                     img,
@@ -235,10 +246,12 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
                 });
             }
 
+            // Remove off-screen particles
             particlesRef.current = particlesRef.current.filter(p =>
                 !(p.y > canvas.height || p.x < -p.size || p.x > canvas.width + p.size)
             );
 
+            // Optional text overlay
             const overlayText = textOverlayRef.current;
             if (overlayText) {
                 ctx.save();
@@ -249,6 +262,7 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
                 ctx.restore();
             }
 
+            // Continue animation
             animationRef.current = requestAnimationFrame(animate);
         };
 
@@ -274,7 +288,6 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
         mergedProps.background
     ]);
 
-
     return (
         <div className={styles.container} ref={containerRef}>
             <canvas
@@ -282,7 +295,7 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
                 style={{
                     width: '100%',
                     height: '100%',
-                    pointerEvents: 'none', // Let clicks pass through the canvas
+                    pointerEvents: 'none',
                     background: mergedProps.background,
                 }}
             />
