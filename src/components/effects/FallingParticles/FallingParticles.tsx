@@ -84,12 +84,38 @@ const mapValue = (value: number, inMin: number, inMax: number, outMin: number, o
     return outMin + ratio * (outMax - outMin);
 }
 
+const initCanvas = async (canvas: HTMLCanvasElement, container: HTMLDivElement, type: keyof typeof particleImageMap | 'all', imageStore: React.MutableRefObject<HTMLImageElement[]>) => {
+    const resizeCanvas = () => {
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+    };
+    resizeCanvas();
+
+    const resolvedTypes: (keyof typeof particleImageMap)[] =
+        type === 'all'
+            ? Object.keys(particleImageMap) as (keyof typeof particleImageMap)[]
+            : [type];
+
+    const imageSources = resolvedTypes.map(t => particleImageMap[t]);
+    const imgs = await Promise.all(imageSources.map(src => new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new Image();
+        img.src = typeof src === 'string' ? src : src.src;
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+    })));
+
+    imageStore.current = imgs;
+};
 
 const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const particlesRef = useRef<Particle[]>([]);
     const animationRef = useRef<number | null>(null);
+    const imagesRef = useRef<HTMLImageElement[]>([]);
+
+    const prevTypeRef = useRef<string>('');
+    const isReadyRef = useRef<boolean>(false);
 
     // Merge incoming props with default values based on particle type
     const mergedProps = useMemo(() => {
@@ -113,13 +139,32 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
         };
     }, [props]);
 
+
     // Keep the latest textOverlay value in a ref for consistent rendering
     const textOverlayRef = useRef(mergedProps.textOverlay);
     useEffect(() => {
         textOverlayRef.current = mergedProps.textOverlay;
-    }, [mergedProps.textOverlay]);
+    }, [props.textOverlay, mergedProps.textOverlay]);
 
-    // Particle animation and rendering logic
+
+    // Only reinitialize when type changes
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const container = containerRef.current;
+        if (!canvas || !container) return;
+
+        if (prevTypeRef.current !== mergedProps.type) {
+            isReadyRef.current = false;
+            initCanvas(canvas, container, mergedProps.type, imagesRef).then(() => {
+                particlesRef.current = [];
+                prevTypeRef.current = mergedProps.type;
+                isReadyRef.current = true;
+            });
+        }
+    }, [mergedProps.type]);
+
+
+    // Animation loop that responds to parameters
     useEffect(() => {
         const canvas = canvasRef.current;
         const container = containerRef.current;
@@ -128,128 +173,110 @@ const FallingParticles: React.FC<FallingParticlesProps> = (props) => {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        const loadImage = (src: string | { src: string }) =>
-            new Promise<HTMLImageElement>((resolve, reject) => {
-                const img = new Image();
-                img.src = typeof src === 'string' ? src : src.src;
-                img.onload = () => resolve(img);
-                img.onerror = reject;
-            });
+        const resizeCanvas = () => {
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+        };
+        resizeCanvas();
 
-        let resizeObserver: ResizeObserver;
+        let frameCount = 0;
 
-        const init = async () => {
-            try {
-                const resolvedTypes: (keyof typeof particleImageMap)[] =
-                    mergedProps.type === 'all'
-                        ? Object.keys(particleImageMap) as (keyof typeof particleImageMap)[]
-                        : [mergedProps.type];
+        const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                const imageSources = resolvedTypes.map(t => particleImageMap[t]);
-                const imgs = await Promise.all(imageSources.map(loadImage));
+            for (const p of particlesRef.current) {
+                p.y += p.speed;
+                if (mergedProps.drift) p.x += p.driftX;
 
-                const resizeCanvas = () => {
-                    canvas.width = container.offsetWidth;
-                    canvas.height = container.offsetHeight;
-                };
-                resizeCanvas();
-                resizeObserver = new ResizeObserver(resizeCanvas);
-                resizeObserver.observe(container);
-
-                particlesRef.current = [];
-
-                for (let i = 0; i < mergedProps.count; i++) {
-                    const img = imgs[Math.floor(Math.random() * imgs.length)];
-                    const speed = randomBetween(mergedProps.speedRange[0], mergedProps.speedRange[1]);
-                    const size = randomBetween(mergedProps.sizeRange[0], mergedProps.sizeRange[1]);
-
-                    const x = Math.random() * canvas.width;
-                    const y = Math.random() * canvas.height;
-
-                    const angleRange = degToRad(mapValue(speed, mergedProps.speedRange[0], mergedProps.speedRange[1], mergedProps.rotateSwingRange, 5));
-                    const angleSpeed = mapValue(speed, mergedProps.speedRange[0], mergedProps.speedRange[1], mergedProps.rotateSpeed, 0.005);
-
-                    particlesRef.current.push({
-                        x,
-                        y,
-                        speed,
-                        size,
-                        img,
-                        driftX: mergedProps.drift ? randomBetween(-mergedProps.driftAmount, mergedProps.driftAmount) : 0,
-                        angle: degToRad(mergedProps.angleInitial),
-                        baseAngle: degToRad(mergedProps.angleInitial),
-                        angleRange: mergedProps.rotate ? angleRange : 0,
-                        angleSpeed: mergedProps.rotate ? angleSpeed : 0,
-                        angleTime: Math.random() * Math.PI * 2,
-                    });
+                if (mergedProps.rotate) {
+                    p.angleTime += p.angleSpeed;
+                    p.angle = p.baseAngle + Math.sin(p.angleTime) * p.angleRange;
                 }
 
-                const animate = () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.save();
+                ctx.globalAlpha = mergedProps.opacity;
+                ctx.filter = 'blur(1px)';
 
-                    for (const p of particlesRef.current) {
-                        p.y += p.speed;
-                        if (mergedProps.drift) p.x += p.driftX;
+                if (mergedProps.rotate || mergedProps.tiltWithDrift) {
+                    ctx.translate(p.x + p.size / 2, p.y + p.size / 2);
+                    let totalAngle = 0;
+                    if (mergedProps.rotate) totalAngle += p.angle;
+                    if (mergedProps.tiltWithDrift) totalAngle += Math.atan2(-p.driftX, p.speed);
+                    ctx.rotate(totalAngle);
+                    ctx.translate(-p.size / 2, -p.size / 2);
+                    ctx.drawImage(p.img, 0, 0, p.size, p.size);
+                } else {
+                    ctx.drawImage(p.img, p.x, p.y, p.size, p.size);
+                }
 
-                        if (mergedProps.rotate) {
-                            p.angleTime += p.angleSpeed;
-                            p.angle = p.baseAngle + Math.sin(p.angleTime) * p.angleRange;
-                        }
-
-                        if (p.y > canvas.height || p.x < -p.size || p.x > canvas.width + p.size) {
-                            p.y = -Math.random() * 100 - 50;
-                            p.x = Math.random() * canvas.width;
-                            p.angleTime = Math.random() * Math.PI * 2;
-                        }
-
-                        ctx.save();
-                        ctx.globalAlpha = mergedProps.opacity;
-                        ctx.filter = 'blur(1px)';
-
-                        if (mergedProps.rotate || mergedProps.tiltWithDrift) {
-                            ctx.translate(p.x + p.size / 2, p.y + p.size / 2);
-                            let totalAngle = 0;
-                            if (mergedProps.rotate) totalAngle += p.angle;
-                            if (mergedProps.tiltWithDrift) totalAngle += Math.atan2(-p.driftX, p.speed);
-                            ctx.rotate(totalAngle);
-                            ctx.translate(-p.size / 2, -p.size / 2);
-                            ctx.drawImage(p.img, 0, 0, p.size, p.size);
-                        } else {
-                            ctx.drawImage(p.img, p.x, p.y, p.size, p.size);
-                        }
-
-                        ctx.restore();
-                    }
-
-                    // Draw overlay text
-                    const overlayText = textOverlayRef.current;
-                    if (overlayText) {
-                        ctx.save();
-                        ctx.font = '24px sans-serif';
-                        ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                        ctx.textAlign = 'center';
-                        ctx.fillText(overlayText, canvas.width / 2, 50);
-                        ctx.restore();
-                    }
-
-                    animationRef.current = requestAnimationFrame(animate);
-                };
-
-                if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
-                animationRef.current = requestAnimationFrame(animate);
-            } catch (err) {
-                console.error('Failed to load images', err);
+                ctx.restore();
             }
+
+            frameCount++;
+            const currentCount = particlesRef.current.length;
+            const targetCount = mergedProps.count;
+
+            if (currentCount < targetCount && imagesRef.current.length > 0 && isReadyRef.current) {
+                const img = imagesRef.current[Math.floor(Math.random() * imagesRef.current.length)];
+                const speed = randomBetween(mergedProps.speedRange[0], mergedProps.speedRange[1]);
+                const size = randomBetween(mergedProps.sizeRange[0], mergedProps.sizeRange[1]);
+                const angleRange = degToRad(mapValue(speed, mergedProps.speedRange[0], mergedProps.speedRange[1], mergedProps.rotateSwingRange, 5));
+                const angleSpeed = mapValue(speed, mergedProps.speedRange[0], mergedProps.speedRange[1], mergedProps.rotateSpeed, 0.005);
+
+                particlesRef.current.push({
+                    x: Math.random() * canvas.width,
+                    y: -size,
+                    speed,
+                    size,
+                    img,
+                    driftX: mergedProps.drift ? randomBetween(-mergedProps.driftAmount, mergedProps.driftAmount) : 0,
+                    angle: degToRad(mergedProps.angleInitial),
+                    baseAngle: degToRad(mergedProps.angleInitial),
+                    angleRange: mergedProps.rotate ? angleRange : 0,
+                    angleSpeed: mergedProps.rotate ? angleSpeed : 0,
+                    angleTime: Math.random() * Math.PI * 2,
+                });
+            }
+
+            particlesRef.current = particlesRef.current.filter(p =>
+                !(p.y > canvas.height || p.x < -p.size || p.x > canvas.width + p.size)
+            );
+
+            const overlayText = textOverlayRef.current;
+            if (overlayText) {
+                ctx.save();
+                ctx.font = '24px sans-serif';
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.textAlign = 'center';
+                ctx.fillText(overlayText, canvas.width / 2, 50);
+                ctx.restore();
+            }
+
+            animationRef.current = requestAnimationFrame(animate);
         };
 
-        init();
+        if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
+        animationRef.current = requestAnimationFrame(animate);
 
         return () => {
             if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
-            if (resizeObserver) resizeObserver.disconnect();
             particlesRef.current = [];
         };
-    }, [mergedProps]);
+    }, [
+        mergedProps.count,
+        mergedProps.speedRange,
+        mergedProps.sizeRange,
+        mergedProps.opacity,
+        mergedProps.rotate,
+        mergedProps.drift,
+        mergedProps.angleInitial,
+        mergedProps.rotateSwingRange,
+        mergedProps.rotateSpeed,
+        mergedProps.driftAmount,
+        mergedProps.tiltWithDrift,
+        mergedProps.background
+    ]);
+
 
     return (
         <div className={styles.container} ref={containerRef}>
